@@ -2433,7 +2433,7 @@ var require_react_dom_development = __commonJS({
         var HostPortal = 4;
         var HostComponent = 5;
         var HostText = 6;
-        var Fragment2 = 7;
+        var Fragment3 = 7;
         var Mode = 8;
         var ContextConsumer = 9;
         var ContextProvider = 10;
@@ -3590,7 +3590,7 @@ var require_react_dom_development = __commonJS({
               return "DehydratedFragment";
             case ForwardRef:
               return getWrappedName$1(type, type.render, "ForwardRef");
-            case Fragment2:
+            case Fragment3:
               return "Fragment";
             case HostComponent:
               return type;
@@ -12019,7 +12019,7 @@ var require_react_dom_development = __commonJS({
             }
           }
           function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-            if (current2 === null || current2.tag !== Fragment2) {
+            if (current2 === null || current2.tag !== Fragment3) {
               var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
               created.return = returnFiber;
               return created;
@@ -12422,7 +12422,7 @@ var require_react_dom_development = __commonJS({
               if (child.key === key) {
                 var elementType = element.type;
                 if (elementType === REACT_FRAGMENT_TYPE) {
-                  if (child.tag === Fragment2) {
+                  if (child.tag === Fragment3) {
                     deleteRemainingChildren(returnFiber, child.sibling);
                     var existing = useFiber(child, element.props.children);
                     existing.return = returnFiber;
@@ -17898,7 +17898,7 @@ var require_react_dom_development = __commonJS({
               var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
               return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
             }
-            case Fragment2:
+            case Fragment3:
               return updateFragment(current2, workInProgress2, renderLanes2);
             case Mode:
               return updateMode(current2, workInProgress2, renderLanes2);
@@ -18170,7 +18170,7 @@ var require_react_dom_development = __commonJS({
             case SimpleMemoComponent:
             case FunctionComponent:
             case ForwardRef:
-            case Fragment2:
+            case Fragment3:
             case Mode:
             case Profiler:
             case ContextConsumer:
@@ -22431,7 +22431,7 @@ var require_react_dom_development = __commonJS({
           return fiber;
         }
         function createFiberFromFragment(elements, mode, lanes, key) {
-          var fiber = createFiber(Fragment2, elements, key, mode);
+          var fiber = createFiber(Fragment3, elements, key, mode);
           fiber.lanes = lanes;
           return fiber;
         }
@@ -24618,6 +24618,11 @@ var createLucideIcon = (iconName, iconNode) => {
   return Component;
 };
 
+// node_modules/lucide-react/dist/esm/icons/chevron-down.js
+var ChevronDown = createLucideIcon("ChevronDown", [
+  ["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]
+]);
+
 // node_modules/lucide-react/dist/esm/icons/clipboard-paste.js
 var ClipboardPaste = createLucideIcon("ClipboardPaste", [
   [
@@ -24673,6 +24678,13 @@ var Grid3x3 = createLucideIcon("Grid3x3", [
   ["path", { d: "M15 3v18", key: "14nvp0" }]
 ]);
 
+// node_modules/lucide-react/dist/esm/icons/info.js
+var Info = createLucideIcon("Info", [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+]);
+
 // node_modules/lucide-react/dist/esm/icons/paintbrush.js
 var Paintbrush = createLucideIcon("Paintbrush", [
   ["path", { d: "m14.622 17.897-10.68-2.913", key: "vj2p1u" }],
@@ -24707,6 +24719,12 @@ var Palette = createLucideIcon("Palette", [
   ]
 ]);
 
+// node_modules/lucide-react/dist/esm/icons/panel-left.js
+var PanelLeft = createLucideIcon("PanelLeft", [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M9 3v18", key: "fh3hqa" }]
+]);
+
 // node_modules/lucide-react/dist/esm/icons/pipette.js
 var Pipette = createLucideIcon("Pipette", [
   ["path", { d: "m2 22 1-1h3l9-9", key: "1sre89" }],
@@ -24718,6 +24736,12 @@ var Pipette = createLucideIcon("Pipette", [
       key: "196du1"
     }
   ]
+]);
+
+// node_modules/lucide-react/dist/esm/icons/redo-2.js
+var Redo2 = createLucideIcon("Redo2", [
+  ["path", { d: "m15 14 5-5-5-5", key: "12vg1m" }],
+  ["path", { d: "M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13", key: "6uklza" }]
 ]);
 
 // node_modules/lucide-react/dist/esm/icons/save.js
@@ -24744,6 +24768,18 @@ var Shapes = createLucideIcon("Shapes", [
   ],
   ["rect", { x: "3", y: "14", width: "7", height: "7", rx: "1", key: "1bkyp8" }],
   ["circle", { cx: "17.5", cy: "17.5", r: "3.5", key: "w3z12y" }]
+]);
+
+// node_modules/lucide-react/dist/esm/icons/undo-2.js
+var Undo2 = createLucideIcon("Undo2", [
+  ["path", { d: "M9 14 4 9l5-5", key: "102s5s" }],
+  ["path", { d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11", key: "f3b9sd" }]
+]);
+
+// node_modules/lucide-react/dist/esm/icons/x.js
+var X = createLucideIcon("X", [
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ]);
 
 // src/inserts/geometry.js
@@ -25590,6 +25626,61 @@ var PAINT_SCOPE_HINTS = {
   color: "Change color only on painted cells",
   background: "Triangle fill only (under the pattern); uses current swatch"
 };
+var INTRO_HELP = "Build a mitsukude-style triangular grid, choose an insert and color. Left-click or drag to paint; right-click or drag to clear the insert (triangle background stays). Middle-click to flood-fill matching neighbors. Ctrl+C / Ctrl+V toggle copy and paste (Cmd on Mac); Ctrl+X then drag a rectangle to cut inserts from that area.";
+var GRID_HELP = "Changing rows or columns regenerates the empty lattice. Existing placements stay as long as their cell IDs still exist.";
+var MAX_HISTORY = 80;
+function clonePlacements(p) {
+  const out = {};
+  for (const [k, v] of Object.entries(p)) {
+    out[k] = { ...v };
+  }
+  return out;
+}
+function floodFillWouldChange(fillIds, prevP, prevBg, paintScope, selectedInsert, selectedColor, selectedDensity, selectedInsertRotationDependent, rotationCorner) {
+  if (fillIds.length === 0) return false;
+  const density = clampDensityForType(selectedInsert, selectedDensity);
+  const corner = Number.isInteger(rotationCorner) ? rotationCorner : 2;
+  if (paintScope === "background") {
+    if (selectedInsert === "empty") {
+      return fillIds.some((id) => id in prevBg || id in prevP);
+    }
+    return fillIds.some((id) => prevBg[id] !== selectedColor);
+  }
+  if (selectedInsert === "empty") {
+    return fillIds.some((id) => id in prevP || id in prevBg);
+  }
+  for (const id of fillIds) {
+    const ex = prevP[id];
+    if (paintScope === "color") {
+      if (!ex?.type || ex.type === "empty") continue;
+      if (ex.color !== selectedColor) return true;
+      continue;
+    }
+    if (paintScope === "shapes") {
+      const keepColor = ex?.color ?? selectedColor;
+      const same = ex?.type === selectedInsert && (ex?.density ?? 1) === density && keepColor === (ex?.color ?? selectedColor) && (!selectedInsertRotationDependent || (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+      if (!same) return true;
+    } else {
+      const same = ex?.type === selectedInsert && ex?.color === selectedColor && (ex?.density ?? 1) === density && (!selectedInsertRotationDependent || (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+      if (!same) return true;
+    }
+  }
+  return false;
+}
+var XL_MEDIA = "(min-width: 1280px)";
+function useIsXlViewport() {
+  const [isXl, setIsXl] = (0, import_react4.useState)(
+    () => typeof window !== "undefined" && window.matchMedia(XL_MEDIA).matches
+  );
+  (0, import_react4.useEffect)(() => {
+    const mq = window.matchMedia(XL_MEDIA);
+    const onChange = () => setIsXl(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isXl;
+}
 function clampInt(value, min, max, fallback) {
   const n = parseInt(value, 10);
   if (Number.isNaN(n)) return fallback;
@@ -25754,6 +25845,10 @@ function KumikoCanvas({
   onPaintCell,
   onEraseCell,
   onFloodFill,
+  onLeftPaintStrokeStart,
+  onLeftPaintStrokeEnd,
+  onRightEraseStrokeStart,
+  onRightEraseStrokeEnd,
   frameRotation = 90,
   eyedropperPending = false,
   onEyedropperSample,
@@ -25762,6 +25857,10 @@ function KumikoCanvas({
   onCopyModeEnd,
   pasteArmed = false,
   onPasteAt,
+  /** Relative-offset map from copy; when set with pasteArmed, shows hover placement preview. */
+  pasteClipboardEntries = null,
+  /** Clears eyedropper / copy marquee / paste (same as Esc for tools). */
+  onDismissCanvasModes,
   showRotationCornerHint = false
 }) {
   const h = TRI_SIZE * SQRT3 * 0.5;
@@ -25773,6 +25872,7 @@ function KumikoCanvas({
   const copyDragRef = (0, import_react4.useRef)(null);
   const [copyMarqueeRect, setCopyMarqueeRect] = (0, import_react4.useState)(null);
   const [hoverCorner, setHoverCorner] = (0, import_react4.useState)(null);
+  const [pasteHoverCellId, setPasteHoverCellId] = (0, import_react4.useState)(null);
   const cellById = (0, import_react4.useMemo)(() => new Map(cells.map((c) => [c.id, c])), [cells]);
   (0, import_react4.useEffect)(() => {
     if (!copySelectActive) {
@@ -25780,6 +25880,54 @@ function KumikoCanvas({
       setCopyMarqueeRect(null);
     }
   }, [copySelectActive]);
+  (0, import_react4.useEffect)(() => {
+    if (!pasteArmed || !pasteClipboardEntries || Object.keys(pasteClipboardEntries).length === 0) {
+      setPasteHoverCellId(null);
+      return void 0;
+    }
+    const lastPtr = { x: Number.NaN, y: Number.NaN };
+    const updateHover = (clientX, clientY) => {
+      lastPtr.x = clientX;
+      lastPtr.y = clientY;
+      const el = document.elementFromPoint(clientX, clientY);
+      const hit = el?.closest?.("[data-tri-hit]");
+      const id = hit?.getAttribute?.("data-tri-hit");
+      setPasteHoverCellId(id || null);
+    };
+    const onMoveTrack = (ev) => updateHover(ev.clientX, ev.clientY);
+    const onScroll = () => {
+      if (Number.isFinite(lastPtr.x)) updateHover(lastPtr.x, lastPtr.y);
+    };
+    window.addEventListener("pointermove", onMoveTrack, { passive: true });
+    document.addEventListener("scroll", onScroll, true);
+    return () => {
+      window.removeEventListener("pointermove", onMoveTrack);
+      document.removeEventListener("scroll", onScroll, true);
+    };
+  }, [pasteArmed, pasteClipboardEntries]);
+  const pastePreviewCells = (0, import_react4.useMemo)(() => {
+    if (!pasteArmed || !pasteClipboardEntries || !pasteHoverCellId) return null;
+    const anchor = parseCellId(pasteHoverCellId);
+    if (!anchor) return null;
+    const list = [];
+    for (const [relKey, p] of Object.entries(pasteClipboardEntries)) {
+      const parts = relKey.split("-");
+      const dr = parseInt(parts[0], 10);
+      const dc = parseInt(parts[1], 10);
+      if (Number.isNaN(dr) || Number.isNaN(dc)) continue;
+      const r = anchor.row + dr;
+      const c = anchor.col + dc;
+      if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
+      list.push({
+        cellId: `${r}-${c}`,
+        type: p.type,
+        color: p.color,
+        density: clampDensityForType(p.type, p.density ?? 1),
+        rotationCorner: Number.isInteger(p.rotationCorner) ? p.rotationCorner : void 0
+      });
+    }
+    return list.length > 0 ? list : null;
+  }, [pasteArmed, pasteClipboardEntries, pasteHoverCellId, rows, cols]);
   function attachLeftDragListeners() {
     const move = (ev) => {
       if ((ev.buttons & 1) === 0) return;
@@ -25794,6 +25942,7 @@ function KumikoCanvas({
     };
     const end = () => {
       lastPaintDragIdRef.current = null;
+      onLeftPaintStrokeEnd?.();
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
@@ -25814,6 +25963,7 @@ function KumikoCanvas({
     };
     const end = () => {
       lastEraseDragIdRef.current = null;
+      onRightEraseStrokeEnd?.();
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
@@ -25840,6 +25990,11 @@ function KumikoCanvas({
   function handleHitPointerDown(e, cell) {
     const cellId = cell.id;
     const rotationCorner = showRotationCornerHint ? nearestCornerIndexInScreenSpace(cell, e.currentTarget, e.clientX, e.clientY) : void 0;
+    if (e.button === 2 && (eyedropperPending || pasteArmed || copySelectActive)) {
+      e.preventDefault();
+      onDismissCanvasModes?.();
+      return;
+    }
     if (eyedropperPending && e.button === 0) {
       e.preventDefault();
       onEyedropperSample?.(cellId);
@@ -25861,11 +26016,13 @@ function KumikoCanvas({
     }
     if (e.button === 0) {
       lastPaintDragIdRef.current = cellId;
+      onLeftPaintStrokeStart?.();
       onPaintCell(cellId, rotationCorner);
       attachLeftDragListeners();
     } else if (e.button === 2) {
       e.preventDefault();
       lastEraseDragIdRef.current = cellId;
+      onRightEraseStrokeStart?.();
       onEraseCell(cellId);
       attachRightDragListeners();
     } else if (e.button === 1) {
@@ -25921,33 +26078,42 @@ function KumikoCanvas({
               const cellBg = cellBackgrounds[cell.id] ?? BG_COLOR;
               return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("g", { children: [
                 /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("defs", { children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("clipPath", { id: `clip-${cell.id}`, children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("polygon", { points: triPointString(cell.points) }) }) }),
-                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-                  "polygon",
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+                  "g",
                   {
-                    points: triPointString(cell.points),
-                    fill: cellBg,
-                    stroke: "none",
-                    style: { pointerEvents: "none" }
-                  }
-                ),
-                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("g", { clipPath: `url(#clip-${cell.id})`, style: { pointerEvents: "none" }, children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-                  InsertArtwork,
-                  {
-                    type: placed.type,
-                    points: INSERT_REGISTRY.get(placed.type)?.rotationDependent ? rotatePointsByCorner(cell.points, placed.rotationCorner) : cell.points,
-                    color: placed.color,
-                    density: placed.density
-                  }
-                ) }),
-                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-                  "polygon",
-                  {
-                    points: triPointString(cell.points),
-                    fill: "none",
-                    stroke: GRID_COLOR,
-                    strokeWidth: STROKE,
-                    vectorEffect: "non-scaling-stroke",
-                    style: { pointerEvents: "none" }
+                    style: {
+                      pointerEvents: "none",
+                      opacity: pasteArmed ? 0.14 : 1
+                    },
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                        "polygon",
+                        {
+                          points: triPointString(cell.points),
+                          fill: cellBg,
+                          stroke: "none"
+                        }
+                      ),
+                      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("g", { clipPath: `url(#clip-${cell.id})`, children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                        InsertArtwork,
+                        {
+                          type: placed.type,
+                          points: INSERT_REGISTRY.get(placed.type)?.rotationDependent ? rotatePointsByCorner(cell.points, placed.rotationCorner) : cell.points,
+                          color: placed.color,
+                          density: placed.density
+                        }
+                      ) }),
+                      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                        "polygon",
+                        {
+                          points: triPointString(cell.points),
+                          fill: "none",
+                          stroke: GRID_COLOR,
+                          strokeWidth: STROKE,
+                          vectorEffect: "non-scaling-stroke"
+                        }
+                      )
+                    ]
                   }
                 ),
                 /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
@@ -25968,6 +26134,35 @@ function KumikoCanvas({
                 )
               ] }, cell.id);
             }),
+            pastePreviewCells ? pastePreviewCells.map((pv) => {
+              const cell = cellById.get(pv.cellId);
+              if (!cell) return null;
+              const meta = INSERT_REGISTRY.get(pv.type);
+              const pts = meta?.rotationDependent && Number.isInteger(pv.rotationCorner) ? rotatePointsByCorner(cell.points, pv.rotationCorner) : cell.points;
+              return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("g", { style: { pointerEvents: "none" }, opacity: 0.88, children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("g", { clipPath: `url(#clip-${cell.id})`, children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                  InsertArtwork,
+                  {
+                    type: pv.type,
+                    points: pts,
+                    color: pv.color,
+                    density: pv.density,
+                    preview: true,
+                    showFrame: false
+                  }
+                ) }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                  "polygon",
+                  {
+                    points: triPointString(cell.points),
+                    fill: "none",
+                    stroke: "rgba(56, 189, 248, 0.9)",
+                    strokeWidth: 2,
+                    vectorEffect: "non-scaling-stroke"
+                  }
+                )
+              ] }, `paste-prev-${pv.cellId}`);
+            }) : null,
             showRotationCornerHint && hoverCorner ? (() => {
               const cell = cellById.get(hoverCorner.cellId);
               const p = cell?.points?.[hoverCorner.corner];
@@ -26014,11 +26209,24 @@ function KumikoGridDesignerApp() {
   const [frameRotation, setFrameRotation] = (0, import_react4.useState)(90);
   const [placements, setPlacements] = (0, import_react4.useState)({});
   const [cellBackgrounds, setCellBackgrounds] = (0, import_react4.useState)({});
+  const [historyTick, setHistoryTick] = (0, import_react4.useState)(0);
   const [eyedropperPending, setEyedropperPending] = (0, import_react4.useState)(false);
   const [clipboard, setClipboard] = (0, import_react4.useState)(null);
   const [awaitingCopyDrag, setAwaitingCopyDrag] = (0, import_react4.useState)(false);
   const [pasteArmed, setPasteArmed] = (0, import_react4.useState)(false);
+  const [introHelpOpen, setIntroHelpOpen] = (0, import_react4.useState)(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = (0, import_react4.useState)(false);
+  const [pieceCountsOpen, setPieceCountsOpen] = (0, import_react4.useState)(true);
+  const isXl = useIsXlViewport();
   const layoutFileInputRef = (0, import_react4.useRef)(null);
+  const pastRef = (0, import_react4.useRef)([]);
+  const futureRef = (0, import_react4.useRef)([]);
+  const applyingHistoryRef = (0, import_react4.useRef)(false);
+  const leftPaintStrokeActiveRef = (0, import_react4.useRef)(false);
+  const leftPaintStrokeHistoryRecordedRef = (0, import_react4.useRef)(false);
+  const rightEraseStrokeActiveRef = (0, import_react4.useRef)(false);
+  const rightEraseStrokeHistoryRecordedRef = (0, import_react4.useRef)(false);
+  const cutAfterRectRef = (0, import_react4.useRef)(false);
   const hasClipboard = (0, import_react4.useMemo)(
     () => Boolean(clipboard?.entries && Object.keys(clipboard.entries).length > 0),
     [clipboard]
@@ -26029,21 +26237,170 @@ function KumikoGridDesignerApp() {
   placementsRef.current = placements;
   const cellBackgroundsRef = (0, import_react4.useRef)(cellBackgrounds);
   cellBackgroundsRef.current = cellBackgrounds;
+  const bumpHistory = (0, import_react4.useCallback)(() => {
+    setHistoryTick((t) => t + 1);
+  }, []);
+  const recordHistory = (0, import_react4.useCallback)(() => {
+    if (applyingHistoryRef.current) return;
+    pastRef.current.push({
+      placements: clonePlacements(placementsRef.current),
+      cellBackgrounds: { ...cellBackgroundsRef.current }
+    });
+    if (pastRef.current.length > MAX_HISTORY) pastRef.current.shift();
+    futureRef.current = [];
+    bumpHistory();
+  }, [bumpHistory]);
+  const beginLeftPaintStroke = (0, import_react4.useCallback)(() => {
+    leftPaintStrokeActiveRef.current = true;
+    leftPaintStrokeHistoryRecordedRef.current = false;
+  }, []);
+  const endLeftPaintStroke = (0, import_react4.useCallback)(() => {
+    leftPaintStrokeActiveRef.current = false;
+    leftPaintStrokeHistoryRecordedRef.current = false;
+  }, []);
+  const beginRightEraseStroke = (0, import_react4.useCallback)(() => {
+    rightEraseStrokeActiveRef.current = true;
+    rightEraseStrokeHistoryRecordedRef.current = false;
+  }, []);
+  const endRightEraseStroke = (0, import_react4.useCallback)(() => {
+    rightEraseStrokeActiveRef.current = false;
+    rightEraseStrokeHistoryRecordedRef.current = false;
+  }, []);
+  const dismissCanvasToolModes = (0, import_react4.useCallback)(() => {
+    cutAfterRectRef.current = false;
+    setEyedropperPending(false);
+    setAwaitingCopyDrag(false);
+    setPasteArmed(false);
+  }, []);
+  const recordHistoryForLeftPaint = (0, import_react4.useCallback)(() => {
+    if (leftPaintStrokeActiveRef.current) {
+      if (leftPaintStrokeHistoryRecordedRef.current) return;
+      leftPaintStrokeHistoryRecordedRef.current = true;
+    }
+    recordHistory();
+  }, [recordHistory]);
+  const recordHistoryForRightErase = (0, import_react4.useCallback)(() => {
+    if (rightEraseStrokeActiveRef.current) {
+      if (rightEraseStrokeHistoryRecordedRef.current) return;
+      rightEraseStrokeHistoryRecordedRef.current = true;
+    }
+    recordHistory();
+  }, [recordHistory]);
+  const applySnapshot = (0, import_react4.useCallback)((snap) => {
+    applyingHistoryRef.current = true;
+    setPlacements(clonePlacements(snap.placements));
+    setCellBackgrounds({ ...snap.cellBackgrounds });
+    queueMicrotask(() => {
+      applyingHistoryRef.current = false;
+    });
+  }, []);
+  const undo = (0, import_react4.useCallback)(() => {
+    if (pastRef.current.length === 0) return false;
+    const prev = pastRef.current.pop();
+    futureRef.current.push({
+      placements: clonePlacements(placementsRef.current),
+      cellBackgrounds: { ...cellBackgroundsRef.current }
+    });
+    applySnapshot(prev);
+    bumpHistory();
+    return true;
+  }, [applySnapshot, bumpHistory]);
+  const redo = (0, import_react4.useCallback)(() => {
+    if (futureRef.current.length === 0) return false;
+    const next = futureRef.current.pop();
+    pastRef.current.push({
+      placements: clonePlacements(placementsRef.current),
+      cellBackgrounds: { ...cellBackgroundsRef.current }
+    });
+    applySnapshot(next);
+    bumpHistory();
+    return true;
+  }, [applySnapshot, bumpHistory]);
+  const canUndo = pastRef.current.length > 0;
+  const canRedo = futureRef.current.length > 0;
   (0, import_react4.useEffect)(() => {
-    setSelectedDensity((d) => clampDensityForType(selectedInsert, d));
-  }, [selectedInsert]);
-  (0, import_react4.useEffect)(() => {
-    if (!eyedropperPending && !awaitingCopyDrag && !pasteArmed) return void 0;
     const onKey = (e) => {
-      if (e.key === "Escape") {
+      const el = e.target;
+      if (el && (el.closest?.("input, textarea, select, [contenteditable=true]") || el.isContentEditable)) {
+        return;
+      }
+      const mod = e.ctrlKey || e.metaKey;
+      if (!mod) return;
+      if (e.key === "z" || e.key === "Z") {
+        const handled = e.shiftKey ? redo() : undo();
+        if (handled) e.preventDefault();
+        return;
+      }
+      if (e.key === "y" || e.key === "Y") {
+        if (redo()) e.preventDefault();
+        return;
+      }
+      if (e.key === "c" || e.key === "C") {
+        cutAfterRectRef.current = false;
+        setAwaitingCopyDrag((v) => {
+          const next = !v;
+          if (next) {
+            setEyedropperPending(false);
+            setPasteArmed(false);
+          }
+          return next;
+        });
+        e.preventDefault();
+        return;
+      }
+      if (e.key === "x" || e.key === "X") {
+        cutAfterRectRef.current = true;
         setEyedropperPending(false);
-        setAwaitingCopyDrag(false);
         setPasteArmed(false);
+        setAwaitingCopyDrag(true);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === "v" || e.key === "V") {
+        if (!hasClipboard) return;
+        setPasteArmed((v) => {
+          const next = !v;
+          if (next) {
+            setEyedropperPending(false);
+            setAwaitingCopyDrag(false);
+          }
+          return next;
+        });
+        cutAfterRectRef.current = false;
+        e.preventDefault();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [eyedropperPending, awaitingCopyDrag, pasteArmed]);
+  }, [undo, redo, hasClipboard]);
+  (0, import_react4.useEffect)(() => {
+    setSelectedDensity((d) => clampDensityForType(selectedInsert, d));
+  }, [selectedInsert]);
+  (0, import_react4.useEffect)(() => {
+    if (!eyedropperPending && !awaitingCopyDrag && !pasteArmed && !mobileDrawerOpen) return void 0;
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        dismissCanvasToolModes();
+        setMobileDrawerOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [eyedropperPending, awaitingCopyDrag, pasteArmed, mobileDrawerOpen, dismissCanvasToolModes]);
+  (0, import_react4.useEffect)(() => {
+    if (!awaitingCopyDrag) cutAfterRectRef.current = false;
+  }, [awaitingCopyDrag]);
+  (0, import_react4.useEffect)(() => {
+    if (isXl) setMobileDrawerOpen(false);
+  }, [isXl]);
+  (0, import_react4.useEffect)(() => {
+    if (isXl || !mobileDrawerOpen) return void 0;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isXl, mobileDrawerOpen]);
   const handleEyedropperSample = (0, import_react4.useCallback)(
     (cellId) => {
       setEyedropperPending(false);
@@ -26112,6 +26469,10 @@ function KumikoGridDesignerApp() {
   const paintCell = (0, import_react4.useCallback)(
     (cellId, rotationCorner) => {
       if (selectedInsert === "empty") {
+        const hasP = cellId in placementsRef.current;
+        const hasB = cellId in cellBackgroundsRef.current;
+        if (!hasP && !hasB) return;
+        recordHistoryForLeftPaint();
         setPlacements((prev) => {
           if (!(cellId in prev)) return prev;
           const next = { ...prev };
@@ -26127,18 +26488,39 @@ function KumikoGridDesignerApp() {
         return;
       }
       if (paintScope === "background") {
+        recordHistoryForLeftPaint();
         setCellBackgrounds((prevBg) => ({ ...prevBg, [cellId]: selectedColor }));
         return;
       }
+      const prevSnap = placementsRef.current;
+      const density = clampDensityForType(selectedInsert, selectedDensity);
+      const corner = Number.isInteger(rotationCorner) ? rotationCorner : 2;
+      if (paintScope === "color") {
+        const ex = prevSnap[cellId];
+        if (!ex?.type || ex.type === "empty") return;
+        if (ex.color === selectedColor) return;
+        recordHistoryForLeftPaint();
+      } else if (paintScope === "shapes") {
+        const ex = prevSnap[cellId];
+        const keepColor = ex?.color ?? selectedColor;
+        const same = ex?.type === selectedInsert && (ex?.density ?? 1) === density && keepColor === (ex?.color ?? selectedColor) && (!selectedInsertRotationDependent || (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+        if (same) return;
+        recordHistoryForLeftPaint();
+      } else {
+        const ex = prevSnap[cellId];
+        const same = ex?.type === selectedInsert && ex?.color === selectedColor && (ex?.density ?? 1) === density && (!selectedInsertRotationDependent || (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+        if (same) return;
+        recordHistoryForLeftPaint();
+      }
       setPlacements((prev) => {
-        const density = clampDensityForType(selectedInsert, selectedDensity);
-        const corner = Number.isInteger(rotationCorner) ? rotationCorner : 2;
+        const d = clampDensityForType(selectedInsert, selectedDensity);
+        const c = Number.isInteger(rotationCorner) ? rotationCorner : 2;
         if (paintScope === "color") {
-          const ex = prev[cellId];
-          if (!ex?.type || ex.type === "empty") return prev;
+          const ex2 = prev[cellId];
+          if (!ex2?.type || ex2.type === "empty") return prev;
           return {
             ...prev,
-            [cellId]: { ...ex, color: selectedColor }
+            [cellId]: { ...ex2, color: selectedColor }
           };
         }
         if (paintScope === "shapes") {
@@ -26148,8 +26530,8 @@ function KumikoGridDesignerApp() {
             [cellId]: {
               type: selectedInsert,
               color: keepColor,
-              density,
-              ...selectedInsertRotationDependent ? { rotationCorner: corner } : {}
+              density: d,
+              ...selectedInsertRotationDependent ? { rotationCorner: c } : {}
             }
           };
         }
@@ -26158,28 +26540,51 @@ function KumikoGridDesignerApp() {
           [cellId]: {
             type: selectedInsert,
             color: selectedColor,
-            density,
-            ...selectedInsertRotationDependent ? { rotationCorner: corner } : {}
+            density: d,
+            ...selectedInsertRotationDependent ? { rotationCorner: c } : {}
           }
         };
       });
     },
-    [selectedInsert, selectedColor, selectedDensity, paintScope, selectedInsertRotationDependent]
+    [
+      selectedInsert,
+      selectedColor,
+      selectedDensity,
+      paintScope,
+      selectedInsertRotationDependent,
+      recordHistoryForLeftPaint
+    ]
   );
   const eraseCell = (0, import_react4.useCallback)((cellId) => {
+    if (!(cellId in placementsRef.current)) return;
+    recordHistoryForRightErase();
     setPlacements((prev) => {
       if (!(cellId in prev)) return prev;
       const next = { ...prev };
       delete next[cellId];
       return next;
     });
-  }, []);
+  }, [recordHistoryForRightErase]);
   const handleCopyRect = (0, import_react4.useCallback)(
     (bounds) => {
+      const doCut = cutAfterRectRef.current;
+      cutAfterRectRef.current = false;
       const entries = collectPlacementsInRect(placements, bounds);
       setClipboard({ entries });
+      if (doCut) {
+        recordHistory();
+        setPlacements((prev) => {
+          const next = { ...prev };
+          for (let r = bounds.rMin; r <= bounds.rMax; r += 1) {
+            for (let c = bounds.cMin; c <= bounds.cMax; c += 1) {
+              delete next[`${r}-${c}`];
+            }
+          }
+          return next;
+        });
+      }
     },
-    [placements]
+    [placements, recordHistory]
   );
   const handleCopyModeEnd = (0, import_react4.useCallback)(() => {
     setAwaitingCopyDrag(false);
@@ -26195,6 +26600,7 @@ function KumikoGridDesignerApp() {
         setPasteArmed(false);
         return;
       }
+      recordHistory();
       setPlacements((prev) => {
         const next = { ...prev };
         for (const [relKey, p] of Object.entries(clipboard.entries)) {
@@ -26216,13 +26622,27 @@ function KumikoGridDesignerApp() {
       });
       setPasteArmed(false);
     },
-    [clipboard, normalizedRows, normalizedCols]
+    [clipboard, normalizedRows, normalizedCols, recordHistory]
   );
   const floodFillFrom = (0, import_react4.useCallback)(
     (startId, rotationCorner) => {
       const prevP = placementsRef.current;
       const prevBg = cellBackgroundsRef.current;
       const fillIds = collectFloodFillIds(startId, neighborMap, prevP, prevBg, paintScope);
+      if (!floodFillWouldChange(
+        fillIds,
+        prevP,
+        prevBg,
+        paintScope,
+        selectedInsert,
+        selectedColor,
+        selectedDensity,
+        selectedInsertRotationDependent,
+        rotationCorner
+      )) {
+        return;
+      }
+      recordHistory();
       if (paintScope === "background") {
         setCellBackgrounds((bg) => {
           const next = { ...bg };
@@ -26284,12 +26704,26 @@ function KumikoGridDesignerApp() {
         });
       }
     },
-    [neighborMap, selectedInsert, selectedColor, selectedDensity, paintScope, selectedInsertRotationDependent]
+    [
+      neighborMap,
+      selectedInsert,
+      selectedColor,
+      selectedDensity,
+      paintScope,
+      selectedInsertRotationDependent,
+      recordHistory
+    ]
   );
-  function clearAll() {
+  const requestClearAll = (0, import_react4.useCallback)(() => {
+    if (!window.confirm(
+      "Clear every insert and all custom triangle backgrounds? You can undo with Ctrl+Z (Cmd+Z on Mac)."
+    )) {
+      return;
+    }
+    recordHistory();
     setPlacements({});
     setCellBackgrounds({});
-  }
+  }, [recordHistory]);
   const saveLayoutToFile = (0, import_react4.useCallback)(() => {
     const json = stringifyLayoutDocument({
       rows: normalizedRows,
@@ -26331,6 +26765,7 @@ function KumikoGridDesignerApp() {
         console.warn(result.error);
         return;
       }
+      recordHistory();
       setRows(String(result.rows));
       setCols(String(result.cols));
       setFrameRotation(result.frameRotation);
@@ -26348,21 +26783,143 @@ function KumikoGridDesignerApp() {
       console.warn("Could not read layout file.");
     };
     reader.readAsText(file);
-  }, []);
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "min-h-screen bg-[#2b241b] text-[#f4ebd4]", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "grid min-h-screen grid-cols-1 xl:h-screen xl:grid-cols-[340px_minmax(0,1fr)] xl:grid-rows-1 xl:items-stretch xl:overflow-hidden", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("aside", { className: "flex h-full min-h-screen flex-col border-r border-white/10 bg-[#5e4c2b] p-4 md:p-5 xl:min-h-0 xl:overflow-y-auto", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex min-h-0 w-full flex-1 flex-col gap-5", children: [
+  }, [recordHistory]);
+  function renderSidebarPanel() {
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex min-h-0 w-full min-w-0 flex-1 flex-col gap-3", children: [
       /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "shrink-0", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("h1", { className: "text-2xl font-semibold tracking-tight", children: "Kumiko Insert Designer" }),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("p", { className: "mt-2 text-sm leading-6 text-[#eadfbe]/80", children: "Build a mitsukude-style triangular grid, choose an insert and color. Left-click or drag to paint, right-click or drag to clear the insert (triangle background stays). Middle-click to flood-fill matching neighbors." })
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex items-start gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("h1", { className: "min-w-0 flex-1 text-lg font-semibold leading-snug tracking-tight xl:text-base", children: "Kumiko Insert Designer" }),
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+            "button",
+            {
+              type: "button",
+              "aria-expanded": introHelpOpen,
+              "aria-label": "How to use",
+              title: "How to use",
+              onClick: () => setIntroHelpOpen((v) => !v),
+              className: `shrink-0 rounded-lg border p-1.5 transition ${introHelpOpen ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"}`,
+              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Info, { className: "h-4 w-4", strokeWidth: 2, "aria-hidden": true })
+            }
+          )
+        ] }),
+        introHelpOpen ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("p", { className: "mt-2 text-xs leading-relaxed text-[#eadfbe]/85", children: INTRO_HELP }) : null
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "shrink-0 rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "pb-3", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-base", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Grid3x3, { className: "h-4 w-4" }),
-          " Grid"
-        ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardContent, { className: "space-y-4", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "grid grid-cols-2 gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex shrink-0 flex-wrap items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] p-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "input",
+          {
+            ref: layoutFileInputRef,
+            type: "file",
+            accept: ".json,application/json",
+            className: "sr-only",
+            tabIndex: -1,
+            onChange: onLayoutFileSelected
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "button",
+          {
+            type: "button",
+            onClick: saveLayoutToFile,
+            title: "Save layout",
+            "aria-label": "Save layout",
+            className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10",
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Save, { className: "h-4 w-4", strokeWidth: 2 })
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "button",
+          {
+            type: "button",
+            onClick: () => layoutFileInputRef.current?.click(),
+            title: "Load layout",
+            "aria-label": "Load layout",
+            className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10",
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(FolderOpen, { className: "h-4 w-4", strokeWidth: 2 })
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "button",
+          {
+            type: "button",
+            onClick: () => setAwaitingCopyDrag((v) => {
+              const next = !v;
+              if (next) {
+                setEyedropperPending(false);
+                setPasteArmed(false);
+              }
+              return next;
+            }),
+            "aria-pressed": awaitingCopyDrag,
+            title: "Copy \u2014 drag on the grid to select a rectangle (Ctrl+C / Cmd+C)",
+            "aria-label": "Copy selection",
+            className: `flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${awaitingCopyDrag ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Copy, { className: "h-4 w-4", strokeWidth: 2 })
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "button",
+          {
+            type: "button",
+            disabled: !hasClipboard,
+            onClick: () => {
+              if (!hasClipboard) return;
+              setPasteArmed((v) => {
+                const next = !v;
+                if (next) {
+                  setEyedropperPending(false);
+                  setAwaitingCopyDrag(false);
+                }
+                return next;
+              });
+            },
+            "aria-pressed": pasteArmed,
+            title: hasClipboard ? "Paste \u2014 click a cell to place the copy (Ctrl+V / Cmd+V)" : "Nothing copied yet",
+            "aria-label": "Paste",
+            className: `flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${!hasClipboard ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35" : pasteArmed ? "border-sky-300/70 bg-sky-400/20 text-[#e8f4ff]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ClipboardPaste, { className: "h-4 w-4", strokeWidth: 2 })
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "button",
+          {
+            type: "button",
+            disabled: !canUndo,
+            onClick: undo,
+            title: "Undo (Ctrl+Z / Cmd+Z)",
+            "aria-label": "Undo",
+            className: `flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${!canUndo ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35" : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Undo2, { className: "h-4 w-4", strokeWidth: 2 })
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "button",
+          {
+            type: "button",
+            disabled: !canRedo,
+            onClick: redo,
+            title: "Redo (Ctrl+Y / Cmd+Shift+Z)",
+            "aria-label": "Redo",
+            className: `flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${!canRedo ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35" : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Redo2, { className: "h-4 w-4", strokeWidth: 2 })
+          }
+        )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "shrink-0 rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "shrink-0 space-y-0 p-3 pb-2", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+          CardTitle,
+          {
+            className: "flex items-center gap-2 text-sm font-semibold",
+            title: GRID_HELP,
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Grid3x3, { className: "h-3.5 w-3.5 shrink-0" }),
+              " Grid"
+            ]
+          }
+        ) }),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardContent, { className: "space-y-2 p-3 pt-0", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1", children: [
               /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Label, { htmlFor: "rows", children: "Rows" }),
               /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
                 Input,
@@ -26373,11 +26930,11 @@ function KumikoGridDesignerApp() {
                   max: 60,
                   value: rows,
                   onChange: (e) => setRows(e.target.value),
-                  className: "rounded-2xl border-white/15 bg-white/10 text-inherit"
+                  className: "h-9 rounded-xl border-white/15 bg-white/10 text-inherit"
                 }
               )
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1", children: [
               /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Label, { htmlFor: "cols", children: "Columns" }),
               /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
                 Input,
@@ -26388,22 +26945,21 @@ function KumikoGridDesignerApp() {
                   max: 80,
                   value: cols,
                   onChange: (e) => setCols(e.target.value),
-                  className: "rounded-2xl border-white/15 bg-white/10 text-inherit"
+                  className: "h-9 rounded-xl border-white/15 bg-white/10 text-inherit"
                 }
               )
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("p", { className: "text-xs text-[#eadfbe]/70", children: "Changing rows or columns regenerates the empty lattice. Existing placements stay as long as their cell IDs still exist." }),
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-2 pt-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1.5 pt-0.5", children: [
             /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Label, { children: "Frame rotation" }),
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "flex flex-wrap gap-1.5", children: FRAME_ROTATIONS2.map((deg) => {
+            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "flex flex-wrap gap-1", children: FRAME_ROTATIONS2.map((deg) => {
               const on = frameRotation === deg;
               return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
                 "button",
                 {
                   type: "button",
                   onClick: () => setFrameRotation(deg),
-                  className: `rounded-xl border px-2.5 py-1.5 text-xs font-medium tabular-nums transition ${on ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"}`,
+                  className: `rounded-lg border px-2 py-1 text-[11px] font-medium tabular-nums transition ${on ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"}`,
                   children: [
                     deg,
                     "\xB0"
@@ -26415,12 +26971,12 @@ function KumikoGridDesignerApp() {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "shrink-0 rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "pb-3", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-base", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Paintbrush, { className: "h-4 w-4" }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "shrink-0 rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "shrink-0 space-y-0 p-3 pb-2", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-sm font-semibold", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Paintbrush, { className: "h-3.5 w-3.5 shrink-0" }),
           " Paint"
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardContent, { children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "flex flex-wrap gap-1.5", children: PAINT_SCOPES2.map((s) => {
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardContent, { className: "p-3 pt-0", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "flex flex-wrap gap-1", children: PAINT_SCOPES2.map((s) => {
           const on = paintScope === s.id;
           const hint = PAINT_SCOPE_HINTS[s.id] ?? "";
           return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
@@ -26429,26 +26985,26 @@ function KumikoGridDesignerApp() {
               type: "button",
               title: hint,
               onClick: () => setPaintScope(s.id),
-              className: `rounded-xl border px-3 py-2 text-xs font-medium transition ${on ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"}`,
+              className: `rounded-lg border px-2 py-1.5 text-[11px] font-medium transition ${on ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"}`,
               children: s.label
             },
             s.id
           );
         }) }) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "shrink-0 rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "pb-3", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-base", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Palette, { className: "h-4 w-4" }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "shrink-0 rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "shrink-0 space-y-0 p-3 pb-2", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-sm font-semibold", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Palette, { className: "h-3.5 w-3.5 shrink-0" }),
           " Insert Color"
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardContent, { children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardContent, { className: "p-3 pt-0", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
             "input",
             {
               type: "color",
               value: selectedColor,
               onChange: (e) => setSelectedColor(e.target.value),
-              className: "h-12 w-16 cursor-pointer rounded border-0 bg-transparent"
+              className: "h-9 w-14 cursor-pointer rounded border-0 bg-transparent"
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
@@ -26466,22 +27022,22 @@ function KumikoGridDesignerApp() {
               "aria-pressed": eyedropperPending,
               title: "Pick color from a painted cell (one click). Click again or Esc to cancel.",
               "aria-label": "Eyedropper: pick color from grid",
-              className: `flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition ${eyedropperPending ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]" : "border-white/10 bg-black/25 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
-              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Pipette, { className: "h-5 w-5", strokeWidth: 2 })
+              className: `flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${eyedropperPending ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]" : "border-white/10 bg-black/25 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
+              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Pipette, { className: "h-4 w-4", strokeWidth: 2 })
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-sm font-medium", children: "Current color" }),
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-sm text-[#eadfbe]/75", children: selectedColor })
+            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-xs font-medium", children: "Current color" }),
+            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "truncate text-[11px] text-[#eadfbe]/75", children: selectedColor })
           ] })
         ] }) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "shrink-0 pb-3", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-base", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Shapes, { className: "h-4 w-4" }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Card, { className: "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardHeader, { className: "shrink-0 space-y-0 p-3 pb-2", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(CardTitle, { className: "flex items-center gap-2 text-sm font-semibold", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Shapes, { className: "h-3.5 w-3.5 shrink-0" }),
           " Insert Shapes"
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardContent, { className: "flex min-h-0 flex-1 flex-col px-6 pb-6 pt-0", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ScrollArea, { className: "min-h-0 flex-1 overflow-y-auto pr-2", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "grid gap-2.5", children: INSERT_LIST.map((insert) => {
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CardContent, { className: "flex min-h-0 min-w-0 flex-1 flex-col p-3 pb-3 pt-0", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ScrollArea, { className: "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden pr-1", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "grid gap-2", children: INSERT_LIST.map((insert) => {
           const categoryActive = selectedInsert === insert.id;
           const minD = insert.minDensity ?? 1;
           const maxD = insert.maxDensity ?? 1;
@@ -26489,16 +27045,16 @@ function KumikoGridDesignerApp() {
           return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
             "div",
             {
-              className: `rounded-2xl border px-3 py-3 transition ${categoryActive ? "border-[#f2d08a] bg-[#f2d08a]/12" : "border-white/10 bg-white/5"}`,
-              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex flex-col items-start gap-2", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "font-medium", children: insert.label }),
-                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "flex flex-wrap gap-1.5", children: insert.id === "empty" ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+              className: `rounded-xl border px-2 py-2 transition ${categoryActive ? "border-[#f2d08a] bg-[#f2d08a]/12" : "border-white/10 bg-white/5"}`,
+              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex flex-col items-start gap-1.5", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-sm font-medium leading-none", children: insert.label }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "flex flex-wrap gap-1", children: insert.id === "empty" ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
                   "button",
                   {
                     type: "button",
                     onClick: () => setSelectedInsert("empty"),
                     title: "Empty \u2014 erase with paint tool",
-                    className: `flex h-12 w-12 items-center justify-center rounded-xl border p-1 transition ${selectedInsert === "empty" ? "border-[#f2d08a] bg-[#f2d08a]/25" : "border-white/10 bg-black/25 hover:bg-white/10"}`,
+                    className: `flex h-10 w-10 items-center justify-center rounded-lg border p-0.5 transition ${selectedInsert === "empty" ? "border-[#f2d08a] bg-[#f2d08a]/25" : "border-white/10 bg-black/25 hover:bg-white/10"}`,
                     children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "box-border h-full w-full min-h-0 min-w-0 rounded-md border-2 border-dashed border-white/40" })
                   }
                 ) : levels.map((lvl) => {
@@ -26512,7 +27068,7 @@ function KumikoGridDesignerApp() {
                         setSelectedInsert(insert.id);
                         setSelectedDensity(lvl);
                       },
-                      className: `flex h-12 w-12 items-center justify-center rounded-xl border p-1 transition ${tileActive ? "border-[#f2d08a] bg-[#f2d08a]/25 shadow-[inset_0_0_0_1px_rgba(242,208,138,0.35)]" : "border-white/10 bg-black/25 hover:border-white/20 hover:bg-white/10"}`,
+                      className: `flex h-10 w-10 items-center justify-center rounded-lg border p-0.5 transition ${tileActive ? "border-[#f2d08a] bg-[#f2d08a]/25 shadow-[inset_0_0_0_1px_rgba(242,208,138,0.35)]" : "border-white/10 bg-black/25 hover:border-white/20 hover:bg-white/10"}`,
                       children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
                         "svg",
                         {
@@ -26543,122 +27099,111 @@ function KumikoGridDesignerApp() {
         }) }) }) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Separator, { className: "shrink-0 bg-white/10" }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex shrink-0 flex-wrap items-center gap-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
-          Button,
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+        Button,
+        {
+          type: "button",
+          onClick: requestClearAll,
+          variant: "secondary",
+          className: "w-full shrink-0 justify-center rounded-xl bg-white/10 px-3 py-2.5 text-xs text-inherit hover:bg-white/15",
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Eraser, { className: "mr-1.5 h-3.5 w-3.5 shrink-0" }),
+            " Clear all inserts & backgrounds"
+          ]
+        }
+      )
+    ] });
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "min-h-screen bg-[#2b241b] text-[#f4ebd4]", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+      "div",
+      {
+        className: `grid min-h-screen xl:h-screen xl:grid-rows-1 xl:items-stretch xl:overflow-hidden ${isXl ? "xl:grid-cols-[minmax(260px,300px)_minmax(0,1fr)]" : "grid-cols-1"}`,
+        children: [
+          isXl ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("aside", { className: "flex h-full min-h-0 flex-col border-r border-white/10 bg-[#5e4c2b] p-3 overflow-y-auto overflow-x-hidden", children: renderSidebarPanel() }) : null,
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("main", { className: "min-h-0 min-w-0 overflow-auto p-3 md:p-4 xl:p-5", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+            KumikoCanvas,
+            {
+              rows: normalizedRows,
+              cols: normalizedCols,
+              cells,
+              placements,
+              cellBackgrounds,
+              frameRotation,
+              eyedropperPending,
+              onEyedropperSample: handleEyedropperSample,
+              copySelectActive: awaitingCopyDrag,
+              onCopyRect: handleCopyRect,
+              onCopyModeEnd: handleCopyModeEnd,
+              pasteArmed,
+              pasteClipboardEntries: pasteArmed && clipboard?.entries && Object.keys(clipboard.entries).length > 0 ? clipboard.entries : null,
+              onPasteAt: handlePasteAt,
+              onDismissCanvasModes: dismissCanvasToolModes,
+              onPaintCell: paintCell,
+              onEraseCell: eraseCell,
+              onFloodFill: floodFillFrom,
+              onLeftPaintStrokeStart: beginLeftPaintStroke,
+              onLeftPaintStrokeEnd: endLeftPaintStroke,
+              onRightEraseStrokeStart: beginRightEraseStroke,
+              onRightEraseStrokeEnd: endRightEraseStroke,
+              showRotationCornerHint: selectedInsertRotationDependent && paintScope !== "background" && selectedInsert !== "empty"
+            }
+          ) })
+        ]
+      }
+    ),
+    !isXl ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_jsx_runtime11.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+        "button",
+        {
+          type: "button",
+          onClick: () => setMobileDrawerOpen(true),
+          className: "fixed bottom-4 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-[#5e4c2b] text-[#f4ebd4] shadow-lg",
+          "aria-label": "Open design controls",
+          children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(PanelLeft, { className: "h-5 w-5", strokeWidth: 2, "aria-hidden": true })
+        }
+      ),
+      mobileDrawerOpen ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_jsx_runtime11.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "div",
           {
-            onClick: clearAll,
-            variant: "secondary",
-            className: "min-w-0 flex-1 justify-start rounded-2xl bg-white/10 text-inherit hover:bg-white/15",
+            className: "fixed inset-0 z-40 bg-black/55",
+            "aria-hidden": true,
+            onClick: () => setMobileDrawerOpen(false)
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+          "div",
+          {
+            className: "fixed inset-y-0 left-0 z-50 flex max-w-[min(22rem,calc(100vw-1.5rem))] flex-col border-r border-white/10 bg-[#5e4c2b] shadow-2xl",
+            style: { width: "min(22rem, calc(100vw - 1.5rem))" },
+            role: "dialog",
+            "aria-modal": "true",
+            "aria-label": "Design controls",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Eraser, { className: "mr-2 h-4 w-4 shrink-0" }),
-              " Clear all inserts"
+              /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-3 py-2.5", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "text-sm font-semibold tracking-tight", children: "Controls" }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => setMobileDrawerOpen(false),
+                    "aria-label": "Close panel",
+                    className: "rounded-lg border border-white/10 bg-white/5 p-2 text-[#eadfbe] hover:bg-white/10",
+                    children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(X, { className: "h-4 w-4", strokeWidth: 2, "aria-hidden": true })
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3", children: renderSidebarPanel() })
             ]
           }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "input",
-          {
-            ref: layoutFileInputRef,
-            type: "file",
-            accept: ".json,application/json",
-            className: "sr-only",
-            tabIndex: -1,
-            onChange: onLayoutFileSelected
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "button",
-          {
-            type: "button",
-            onClick: saveLayoutToFile,
-            title: "Save layout",
-            "aria-label": "Save layout",
-            className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10",
-            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Save, { className: "h-4 w-4", strokeWidth: 2 })
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "button",
-          {
-            type: "button",
-            onClick: () => layoutFileInputRef.current?.click(),
-            title: "Load layout",
-            "aria-label": "Load layout",
-            className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10",
-            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(FolderOpen, { className: "h-4 w-4", strokeWidth: 2 })
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "button",
-          {
-            type: "button",
-            onClick: () => setAwaitingCopyDrag((v) => {
-              const next = !v;
-              if (next) {
-                setEyedropperPending(false);
-                setPasteArmed(false);
-              }
-              return next;
-            }),
-            "aria-pressed": awaitingCopyDrag,
-            title: "Copy \u2014 drag on the grid to select a rectangle of cells",
-            "aria-label": "Copy selection",
-            className: `flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border transition ${awaitingCopyDrag ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
-            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Copy, { className: "h-4 w-4", strokeWidth: 2 })
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-          "button",
-          {
-            type: "button",
-            disabled: !hasClipboard,
-            onClick: () => {
-              if (!hasClipboard) return;
-              setPasteArmed((v) => {
-                const next = !v;
-                if (next) {
-                  setEyedropperPending(false);
-                  setAwaitingCopyDrag(false);
-                }
-                return next;
-              });
-            },
-            "aria-pressed": pasteArmed,
-            title: hasClipboard ? "Paste \u2014 click a cell to place the copy" : "Nothing copied yet",
-            "aria-label": "Paste",
-            className: `flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border transition ${!hasClipboard ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35" : pasteArmed ? "border-sky-300/70 bg-sky-400/20 text-[#e8f4ff]" : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"}`,
-            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ClipboardPaste, { className: "h-4 w-4", strokeWidth: 2 })
-          }
         )
-      ] })
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("main", { className: "min-h-0 overflow-auto p-3 md:p-4 xl:p-5", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-      KumikoCanvas,
-      {
-        rows: normalizedRows,
-        cols: normalizedCols,
-        cells,
-        placements,
-        cellBackgrounds,
-        frameRotation,
-        eyedropperPending,
-        onEyedropperSample: handleEyedropperSample,
-        copySelectActive: awaitingCopyDrag,
-        onCopyRect: handleCopyRect,
-        onCopyModeEnd: handleCopyModeEnd,
-        pasteArmed,
-        onPasteAt: handlePasteAt,
-        onPaintCell: paintCell,
-        onEraseCell: eraseCell,
-        onFloodFill: floodFillFrom,
-        showRotationCornerHint: selectedInsertRotationDependent && paintScope !== "background" && selectedInsert !== "empty"
-      }
-    ) }),
+      ] }) : null
+    ] }) : null,
     /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
       "aside",
       {
-        className: "pointer-events-auto w-[360px] rounded-2xl border border-white/10 bg-black/45 p-3 shadow-2xl backdrop-blur-sm",
+        className: `pointer-events-auto max-w-[calc(100vw-2rem)] rounded-2xl border border-white/10 bg-black/45 p-3 shadow-2xl backdrop-blur-sm ${pieceCountsOpen ? "w-[min(360px,calc(100vw-2rem))]" : "w-max"}`,
         style: {
           position: "fixed",
           right: 16,
@@ -26666,75 +27211,105 @@ function KumikoGridDesignerApp() {
           zIndex: 30
         },
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mb-2 text-xs font-semibold uppercase tracking-wide text-[#eadfbe]/85", children: "Piece Counts" }),
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "max-h-[62vh] space-y-3 overflow-y-auto pr-1", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-[11px] uppercase tracking-wide text-[#eadfbe]/60", children: "Inserts" }),
-              pieceCounts.inserts.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-xs text-[#eadfbe]/60", children: "None placed" }) : pieceCounts.inserts.map((item) => {
-                const insertMeta = INSERT_REGISTRY.get(item.type);
-                const previewPoints = insertMeta?.rotationDependent ? rotatePointsByCorner(insertPreview.points, item.rotationCorner) : insertPreview.points;
-                return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
-                  "div",
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+            "button",
+            {
+              type: "button",
+              className: `flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1 text-left transition hover:bg-white/5 ${pieceCountsOpen ? "mb-2" : "mb-0"}`,
+              onClick: () => setPieceCountsOpen((o) => !o),
+              "aria-expanded": pieceCountsOpen,
+              "aria-controls": pieceCountsOpen ? "piece-counts-body" : void 0,
+              id: "piece-counts-heading",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "text-xs font-semibold uppercase tracking-wide text-[#eadfbe]/85", children: "Piece Counts" }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                  ChevronDown,
                   {
-                    className: "flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5",
-                    children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-                        "svg",
-                        {
-                          viewBox: insertPreview.viewBox,
-                          preserveAspectRatio: "xMidYMid meet",
-                          className: "h-7 w-7 shrink-0 overflow-visible rounded-md bg-black/20",
-                          "aria-hidden": true,
-                          children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-                            InsertArtwork,
+                    className: `h-4 w-4 shrink-0 text-[#eadfbe]/80 transition-transform duration-200 ${pieceCountsOpen ? "rotate-180" : ""}`,
+                    strokeWidth: 2,
+                    "aria-hidden": true
+                  }
+                )
+              ]
+            }
+          ),
+          pieceCountsOpen ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+            "div",
+            {
+              id: "piece-counts-body",
+              role: "region",
+              "aria-labelledby": "piece-counts-heading",
+              className: "max-h-[62vh] space-y-3 overflow-y-auto pr-1",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-[11px] uppercase tracking-wide text-[#eadfbe]/60", children: "Inserts" }),
+                  pieceCounts.inserts.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-xs text-[#eadfbe]/60", children: "None placed" }) : pieceCounts.inserts.map((item) => {
+                    const insertMeta = INSERT_REGISTRY.get(item.type);
+                    const previewPoints = insertMeta?.rotationDependent ? rotatePointsByCorner(insertPreview.points, item.rotationCorner) : insertPreview.points;
+                    return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+                      "div",
+                      {
+                        className: "flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5",
+                        children: [
+                          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                            "svg",
                             {
-                              type: item.type,
-                              points: previewPoints,
-                              color: item.color,
-                              density: item.density,
-                              preview: true,
-                              showFrame: false
+                              viewBox: insertPreview.viewBox,
+                              preserveAspectRatio: "xMidYMid meet",
+                              className: "h-7 w-7 shrink-0 overflow-visible rounded-md bg-black/20",
+                              "aria-hidden": true,
+                              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                                InsertArtwork,
+                                {
+                                  type: item.type,
+                                  points: previewPoints,
+                                  color: item.color,
+                                  density: item.density,
+                                  preview: true,
+                                  showFrame: false
+                                }
+                              )
                             }
-                          )
-                        }
-                      ),
-                      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "min-w-0 flex-1 text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-[#f4ebd4]", children: insertMeta?.label ?? item.type }),
-                        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "break-all text-[#eadfbe]/65", children: item.color })
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "shrink-0 text-sm font-semibold text-[#f4ebd4]", children: [
-                        "x ",
-                        item.count
-                      ] })
-                    ]
-                  },
-                  `${item.type}-${item.color}-${item.density}`
-                );
-              })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-[11px] uppercase tracking-wide text-[#eadfbe]/60", children: "Backgrounds" }),
-              pieceCounts.backgrounds.map((bg) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
-                "div",
-                {
-                  className: "flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5",
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "h-6 w-6 shrink-0 rounded-md border border-white/15", style: { backgroundColor: bg.color } }),
-                    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "min-w-0 flex-1 break-all text-xs text-[#eadfbe]/75", children: bg.color }),
-                    /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "shrink-0 text-sm font-semibold text-[#f4ebd4]", children: [
-                      "x ",
-                      bg.count
-                    ] })
-                  ]
-                },
-                `bg-${bg.color}`
-              ))
-            ] })
-          ] })
+                          ),
+                          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "min-w-0 flex-1 text-xs", children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-[#f4ebd4]", children: insertMeta?.label ?? item.type }),
+                            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "break-all text-[#eadfbe]/65", children: item.color })
+                          ] }),
+                          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "shrink-0 text-sm font-semibold text-[#f4ebd4]", children: [
+                            "x ",
+                            item.count
+                          ] })
+                        ]
+                      },
+                      `${item.type}-${item.color}-${item.density}`
+                    );
+                  })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "space-y-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "text-[11px] uppercase tracking-wide text-[#eadfbe]/60", children: "Backgrounds" }),
+                  pieceCounts.backgrounds.map((bg) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+                    "div",
+                    {
+                      className: "flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5",
+                      children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "h-6 w-6 shrink-0 rounded-md border border-white/15", style: { backgroundColor: bg.color } }),
+                        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "min-w-0 flex-1 break-all text-xs text-[#eadfbe]/75", children: bg.color }),
+                        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "shrink-0 text-sm font-semibold text-[#f4ebd4]", children: [
+                          "x ",
+                          bg.count
+                        ] })
+                      ]
+                    },
+                    `bg-${bg.color}`
+                  ))
+                ] })
+              ]
+            }
+          ) : null
         ]
       }
     )
-  ] }) });
+  ] });
 }
 
 // src/main.jsx
@@ -26837,6 +27412,14 @@ lucide-react/dist/esm/createLucideIcon.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/chevron-down.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/clipboard-paste.js:
   (**
    * @license lucide-react v0.468.0 - ISC
@@ -26877,6 +27460,14 @@ lucide-react/dist/esm/icons/grid-3x3.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/info.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/paintbrush.js:
   (**
    * @license lucide-react v0.468.0 - ISC
@@ -26893,7 +27484,23 @@ lucide-react/dist/esm/icons/palette.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/panel-left.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/pipette.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/redo-2.js:
   (**
    * @license lucide-react v0.468.0 - ISC
    *
@@ -26910,6 +27517,22 @@ lucide-react/dist/esm/icons/save.js:
    *)
 
 lucide-react/dist/esm/icons/shapes.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/undo-2.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/x.js:
   (**
    * @license lucide-react v0.468.0 - ISC
    *

@@ -11,18 +11,9 @@ A small web app for laying out **mitsukude-style triangular grids** with decorat
 - **Piece counts overlay** (top-right): running totals by insert variant and by background color, with small previews.
 - **Save / load** layout JSON (includes placements, backgrounds, and UI state).
 
-## Screenshots
+## Screenshot
 
-Add images under `docs/screenshots/` (create the folder if needed), then uncomment or replace the lines below.
-
-<!-- Recommended filenames:
-  - docs/screenshots/main-grid.png
-  - docs/screenshots/piece-counts.png
--->
-
-![Main grid](docs/screenshots/main-grid.png)
-
-![Piece counts overlay](docs/screenshots/piece-counts.png)
+![Main Image](docs/screenshots/main.png)
 
 ## Requirements
 

@@ -21,6 +21,12 @@ import {
   Copy,
   ClipboardPaste,
   Paintbrush,
+  Info,
+  PanelLeft,
+  X,
+  Undo2,
+  Redo2,
+  ChevronDown,
 } from "lucide-react";
 import { triPointString } from "./inserts/geometry.js";
 import { InsertArtwork, INSERT_LIST, INSERT_REGISTRY, clampDensityForType } from "./inserts/registry.js";
@@ -82,6 +88,93 @@ const PAINT_SCOPE_HINTS = {
   color: "Change color only on painted cells",
   background: "Triangle fill only (under the pattern); uses current swatch",
 };
+
+const INTRO_HELP =
+  "Build a mitsukude-style triangular grid, choose an insert and color. Left-click or drag to paint; right-click or drag to clear the insert (triangle background stays). Middle-click to flood-fill matching neighbors. Ctrl+C / Ctrl+V toggle copy and paste (Cmd on Mac); Ctrl+X then drag a rectangle to cut inserts from that area.";
+
+const GRID_HELP =
+  "Changing rows or columns regenerates the empty lattice. Existing placements stay as long as their cell IDs still exist.";
+
+const MAX_HISTORY = 80;
+
+function clonePlacements(p) {
+  const out = {};
+  for (const [k, v] of Object.entries(p)) {
+    out[k] = { ...v };
+  }
+  return out;
+}
+
+function floodFillWouldChange(
+  fillIds,
+  prevP,
+  prevBg,
+  paintScope,
+  selectedInsert,
+  selectedColor,
+  selectedDensity,
+  selectedInsertRotationDependent,
+  rotationCorner,
+) {
+  if (fillIds.length === 0) return false;
+  const density = clampDensityForType(selectedInsert, selectedDensity);
+  const corner = Number.isInteger(rotationCorner) ? rotationCorner : 2;
+
+  if (paintScope === "background") {
+    if (selectedInsert === "empty") {
+      return fillIds.some((id) => id in prevBg || id in prevP);
+    }
+    return fillIds.some((id) => prevBg[id] !== selectedColor);
+  }
+
+  if (selectedInsert === "empty") {
+    return fillIds.some((id) => id in prevP || id in prevBg);
+  }
+
+  for (const id of fillIds) {
+    const ex = prevP[id];
+    if (paintScope === "color") {
+      if (!ex?.type || ex.type === "empty") continue;
+      if (ex.color !== selectedColor) return true;
+      continue;
+    }
+    if (paintScope === "shapes") {
+      const keepColor = ex?.color ?? selectedColor;
+      const same =
+        ex?.type === selectedInsert &&
+        (ex?.density ?? 1) === density &&
+        keepColor === (ex?.color ?? selectedColor) &&
+        (!selectedInsertRotationDependent ||
+          (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+      if (!same) return true;
+    } else {
+      const same =
+        ex?.type === selectedInsert &&
+        ex?.color === selectedColor &&
+        (ex?.density ?? 1) === density &&
+        (!selectedInsertRotationDependent ||
+          (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+      if (!same) return true;
+    }
+  }
+  return false;
+}
+
+const XL_MEDIA = "(min-width: 1280px)";
+
+function useIsXlViewport() {
+  const [isXl, setIsXl] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(XL_MEDIA).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(XL_MEDIA);
+    const onChange = () => setIsXl(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isXl;
+}
 
 function clampInt(value, min, max, fallback) {
   const n = parseInt(value, 10);
@@ -273,6 +366,10 @@ function KumikoCanvas({
   onPaintCell,
   onEraseCell,
   onFloodFill,
+  onLeftPaintStrokeStart,
+  onLeftPaintStrokeEnd,
+  onRightEraseStrokeStart,
+  onRightEraseStrokeEnd,
   frameRotation = 90,
   eyedropperPending = false,
   onEyedropperSample,
@@ -281,6 +378,10 @@ function KumikoCanvas({
   onCopyModeEnd,
   pasteArmed = false,
   onPasteAt,
+  /** Relative-offset map from copy; when set with pasteArmed, shows hover placement preview. */
+  pasteClipboardEntries = null,
+  /** Clears eyedropper / copy marquee / paste (same as Esc for tools). */
+  onDismissCanvasModes,
   showRotationCornerHint = false,
 }) {
   const h = TRI_SIZE * SQRT3 * 0.5;
@@ -294,6 +395,7 @@ function KumikoCanvas({
   const copyDragRef = useRef(null);
   const [copyMarqueeRect, setCopyMarqueeRect] = useState(null);
   const [hoverCorner, setHoverCorner] = useState(null);
+  const [pasteHoverCellId, setPasteHoverCellId] = useState(null);
   const cellById = useMemo(() => new Map(cells.map((c) => [c.id, c])), [cells]);
 
   useEffect(() => {
@@ -302,6 +404,56 @@ function KumikoCanvas({
       setCopyMarqueeRect(null);
     }
   }, [copySelectActive]);
+
+  useEffect(() => {
+    if (!pasteArmed || !pasteClipboardEntries || Object.keys(pasteClipboardEntries).length === 0) {
+      setPasteHoverCellId(null);
+      return undefined;
+    }
+    const lastPtr = { x: Number.NaN, y: Number.NaN };
+    const updateHover = (clientX, clientY) => {
+      lastPtr.x = clientX;
+      lastPtr.y = clientY;
+      const el = document.elementFromPoint(clientX, clientY);
+      const hit = el?.closest?.("[data-tri-hit]");
+      const id = hit?.getAttribute?.("data-tri-hit");
+      setPasteHoverCellId(id || null);
+    };
+    const onMoveTrack = (ev) => updateHover(ev.clientX, ev.clientY);
+    const onScroll = () => {
+      if (Number.isFinite(lastPtr.x)) updateHover(lastPtr.x, lastPtr.y);
+    };
+    window.addEventListener("pointermove", onMoveTrack, { passive: true });
+    document.addEventListener("scroll", onScroll, true);
+    return () => {
+      window.removeEventListener("pointermove", onMoveTrack);
+      document.removeEventListener("scroll", onScroll, true);
+    };
+  }, [pasteArmed, pasteClipboardEntries]);
+
+  const pastePreviewCells = useMemo(() => {
+    if (!pasteArmed || !pasteClipboardEntries || !pasteHoverCellId) return null;
+    const anchor = parseCellId(pasteHoverCellId);
+    if (!anchor) return null;
+    const list = [];
+    for (const [relKey, p] of Object.entries(pasteClipboardEntries)) {
+      const parts = relKey.split("-");
+      const dr = parseInt(parts[0], 10);
+      const dc = parseInt(parts[1], 10);
+      if (Number.isNaN(dr) || Number.isNaN(dc)) continue;
+      const r = anchor.row + dr;
+      const c = anchor.col + dc;
+      if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
+      list.push({
+        cellId: `${r}-${c}`,
+        type: p.type,
+        color: p.color,
+        density: clampDensityForType(p.type, p.density ?? 1),
+        rotationCorner: Number.isInteger(p.rotationCorner) ? p.rotationCorner : undefined,
+      });
+    }
+    return list.length > 0 ? list : null;
+  }, [pasteArmed, pasteClipboardEntries, pasteHoverCellId, rows, cols]);
 
   function attachLeftDragListeners() {
     const move = (ev) => {
@@ -318,6 +470,7 @@ function KumikoCanvas({
     };
     const end = () => {
       lastPaintDragIdRef.current = null;
+      onLeftPaintStrokeEnd?.();
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
@@ -339,6 +492,7 @@ function KumikoCanvas({
     };
     const end = () => {
       lastEraseDragIdRef.current = null;
+      onRightEraseStrokeEnd?.();
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
@@ -369,6 +523,11 @@ function KumikoCanvas({
     const cellId = cell.id;
     const rotationCorner =
       showRotationCornerHint ? nearestCornerIndexInScreenSpace(cell, e.currentTarget, e.clientX, e.clientY) : undefined;
+    if (e.button === 2 && (eyedropperPending || pasteArmed || copySelectActive)) {
+      e.preventDefault();
+      onDismissCanvasModes?.();
+      return;
+    }
     if (eyedropperPending && e.button === 0) {
       e.preventDefault();
       onEyedropperSample?.(cellId);
@@ -390,11 +549,13 @@ function KumikoCanvas({
     }
     if (e.button === 0) {
       lastPaintDragIdRef.current = cellId;
+      onLeftPaintStrokeStart?.();
       onPaintCell(cellId, rotationCorner);
       attachLeftDragListeners();
     } else if (e.button === 2) {
       e.preventDefault();
       lastEraseDragIdRef.current = cellId;
+      onRightEraseStrokeStart?.();
       onEraseCell(cellId);
       attachRightDragListeners();
     } else if (e.button === 1) {
@@ -467,34 +628,39 @@ function KumikoCanvas({
                     </clipPath>
                   </defs>
 
-                  <polygon
-                    points={triPointString(cell.points)}
-                    fill={cellBg}
-                    stroke="none"
-                    style={{ pointerEvents: "none" }}
-                  />
+                  <g
+                    style={{
+                      pointerEvents: "none",
+                      opacity: pasteArmed ? 0.14 : 1,
+                    }}
+                  >
+                    <polygon
+                      points={triPointString(cell.points)}
+                      fill={cellBg}
+                      stroke="none"
+                    />
 
-                  <g clipPath={`url(#clip-${cell.id})`} style={{ pointerEvents: "none" }}>
-                    <InsertArtwork
-                      type={placed.type}
-                      points={
-                        INSERT_REGISTRY.get(placed.type)?.rotationDependent
-                          ? rotatePointsByCorner(cell.points, placed.rotationCorner)
-                          : cell.points
-                      }
-                      color={placed.color}
-                      density={placed.density}
+                    <g clipPath={`url(#clip-${cell.id})`}>
+                      <InsertArtwork
+                        type={placed.type}
+                        points={
+                          INSERT_REGISTRY.get(placed.type)?.rotationDependent
+                            ? rotatePointsByCorner(cell.points, placed.rotationCorner)
+                            : cell.points
+                        }
+                        color={placed.color}
+                        density={placed.density}
+                      />
+                    </g>
+
+                    <polygon
+                      points={triPointString(cell.points)}
+                      fill="none"
+                      stroke={GRID_COLOR}
+                      strokeWidth={STROKE}
+                      vectorEffect="non-scaling-stroke"
                     />
                   </g>
-
-                  <polygon
-                    points={triPointString(cell.points)}
-                    fill="none"
-                    stroke={GRID_COLOR}
-                    strokeWidth={STROKE}
-                    vectorEffect="non-scaling-stroke"
-                    style={{ pointerEvents: "none" }}
-                  />
 
                   <polygon
                     data-tri-hit={cell.id}
@@ -512,6 +678,38 @@ function KumikoCanvas({
                 </g>
               );
             })}
+            {pastePreviewCells
+              ? pastePreviewCells.map((pv) => {
+                  const cell = cellById.get(pv.cellId);
+                  if (!cell) return null;
+                  const meta = INSERT_REGISTRY.get(pv.type);
+                  const pts =
+                    meta?.rotationDependent && Number.isInteger(pv.rotationCorner)
+                      ? rotatePointsByCorner(cell.points, pv.rotationCorner)
+                      : cell.points;
+                  return (
+                    <g key={`paste-prev-${pv.cellId}`} style={{ pointerEvents: "none" }} opacity={0.88}>
+                      <g clipPath={`url(#clip-${cell.id})`}>
+                        <InsertArtwork
+                          type={pv.type}
+                          points={pts}
+                          color={pv.color}
+                          density={pv.density}
+                          preview
+                          showFrame={false}
+                        />
+                      </g>
+                      <polygon
+                        points={triPointString(cell.points)}
+                        fill="none"
+                        stroke="rgba(56, 189, 248, 0.9)"
+                        strokeWidth={2}
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </g>
+                  );
+                })
+              : null}
             {showRotationCornerHint && hoverCorner
               ? (() => {
                   const cell = cellById.get(hoverCorner.cellId);
@@ -563,11 +761,25 @@ export default function KumikoGridDesignerApp() {
   const [frameRotation, setFrameRotation] = useState(90);
   const [placements, setPlacements] = useState({});
   const [cellBackgrounds, setCellBackgrounds] = useState({});
+  const [historyTick, setHistoryTick] = useState(0);
   const [eyedropperPending, setEyedropperPending] = useState(false);
   const [clipboard, setClipboard] = useState(null);
   const [awaitingCopyDrag, setAwaitingCopyDrag] = useState(false);
   const [pasteArmed, setPasteArmed] = useState(false);
+  const [introHelpOpen, setIntroHelpOpen] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [pieceCountsOpen, setPieceCountsOpen] = useState(true);
+  const isXl = useIsXlViewport();
   const layoutFileInputRef = useRef(null);
+  const pastRef = useRef([]);
+  const futureRef = useRef([]);
+  const applyingHistoryRef = useRef(false);
+  const leftPaintStrokeActiveRef = useRef(false);
+  const leftPaintStrokeHistoryRecordedRef = useRef(false);
+  const rightEraseStrokeActiveRef = useRef(false);
+  const rightEraseStrokeHistoryRecordedRef = useRef(false);
+  /** Next rectangle copy (from toolbar or Ctrl+X) removes inserts in that rect after copying. */
+  const cutAfterRectRef = useRef(false);
 
   const hasClipboard = useMemo(
     () => Boolean(clipboard?.entries && Object.keys(clipboard.entries).length > 0),
@@ -581,22 +793,191 @@ export default function KumikoGridDesignerApp() {
   const cellBackgroundsRef = useRef(cellBackgrounds);
   cellBackgroundsRef.current = cellBackgrounds;
 
+  const bumpHistory = useCallback(() => {
+    setHistoryTick((t) => t + 1);
+  }, []);
+
+  const recordHistory = useCallback(() => {
+    if (applyingHistoryRef.current) return;
+    pastRef.current.push({
+      placements: clonePlacements(placementsRef.current),
+      cellBackgrounds: { ...cellBackgroundsRef.current },
+    });
+    if (pastRef.current.length > MAX_HISTORY) pastRef.current.shift();
+    futureRef.current = [];
+    bumpHistory();
+  }, [bumpHistory]);
+
+  const beginLeftPaintStroke = useCallback(() => {
+    leftPaintStrokeActiveRef.current = true;
+    leftPaintStrokeHistoryRecordedRef.current = false;
+  }, []);
+
+  const endLeftPaintStroke = useCallback(() => {
+    leftPaintStrokeActiveRef.current = false;
+    leftPaintStrokeHistoryRecordedRef.current = false;
+  }, []);
+
+  const beginRightEraseStroke = useCallback(() => {
+    rightEraseStrokeActiveRef.current = true;
+    rightEraseStrokeHistoryRecordedRef.current = false;
+  }, []);
+
+  const endRightEraseStroke = useCallback(() => {
+    rightEraseStrokeActiveRef.current = false;
+    rightEraseStrokeHistoryRecordedRef.current = false;
+  }, []);
+
+  const dismissCanvasToolModes = useCallback(() => {
+    cutAfterRectRef.current = false;
+    setEyedropperPending(false);
+    setAwaitingCopyDrag(false);
+    setPasteArmed(false);
+  }, []);
+
+  /** One undo step per left-drag stroke: record only before the first mutation. */
+  const recordHistoryForLeftPaint = useCallback(() => {
+    if (leftPaintStrokeActiveRef.current) {
+      if (leftPaintStrokeHistoryRecordedRef.current) return;
+      leftPaintStrokeHistoryRecordedRef.current = true;
+    }
+    recordHistory();
+  }, [recordHistory]);
+
+  /** One undo step per right-drag erase stroke. */
+  const recordHistoryForRightErase = useCallback(() => {
+    if (rightEraseStrokeActiveRef.current) {
+      if (rightEraseStrokeHistoryRecordedRef.current) return;
+      rightEraseStrokeHistoryRecordedRef.current = true;
+    }
+    recordHistory();
+  }, [recordHistory]);
+
+  const applySnapshot = useCallback((snap) => {
+    applyingHistoryRef.current = true;
+    setPlacements(clonePlacements(snap.placements));
+    setCellBackgrounds({ ...snap.cellBackgrounds });
+    queueMicrotask(() => {
+      applyingHistoryRef.current = false;
+    });
+  }, []);
+
+  const undo = useCallback(() => {
+    if (pastRef.current.length === 0) return false;
+    const prev = pastRef.current.pop();
+    futureRef.current.push({
+      placements: clonePlacements(placementsRef.current),
+      cellBackgrounds: { ...cellBackgroundsRef.current },
+    });
+    applySnapshot(prev);
+    bumpHistory();
+    return true;
+  }, [applySnapshot, bumpHistory]);
+
+  const redo = useCallback(() => {
+    if (futureRef.current.length === 0) return false;
+    const next = futureRef.current.pop();
+    pastRef.current.push({
+      placements: clonePlacements(placementsRef.current),
+      cellBackgrounds: { ...cellBackgroundsRef.current },
+    });
+    applySnapshot(next);
+    bumpHistory();
+    return true;
+  }, [applySnapshot, bumpHistory]);
+
+  void historyTick;
+  const canUndo = pastRef.current.length > 0;
+  const canRedo = futureRef.current.length > 0;
+
+  useEffect(() => {
+    const onKey = (e) => {
+      const el = e.target;
+      if (el && (el.closest?.("input, textarea, select, [contenteditable=true]") || el.isContentEditable)) {
+        return;
+      }
+      const mod = e.ctrlKey || e.metaKey;
+      if (!mod) return;
+      if (e.key === "z" || e.key === "Z") {
+        const handled = e.shiftKey ? redo() : undo();
+        if (handled) e.preventDefault();
+        return;
+      }
+      if (e.key === "y" || e.key === "Y") {
+        if (redo()) e.preventDefault();
+        return;
+      }
+      if (e.key === "c" || e.key === "C") {
+        cutAfterRectRef.current = false;
+        setAwaitingCopyDrag((v) => {
+          const next = !v;
+          if (next) {
+            setEyedropperPending(false);
+            setPasteArmed(false);
+          }
+          return next;
+        });
+        e.preventDefault();
+        return;
+      }
+      if (e.key === "x" || e.key === "X") {
+        cutAfterRectRef.current = true;
+        setEyedropperPending(false);
+        setPasteArmed(false);
+        setAwaitingCopyDrag(true);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === "v" || e.key === "V") {
+        if (!hasClipboard) return;
+        setPasteArmed((v) => {
+          const next = !v;
+          if (next) {
+            setEyedropperPending(false);
+            setAwaitingCopyDrag(false);
+          }
+          return next;
+        });
+        cutAfterRectRef.current = false;
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [undo, redo, hasClipboard]);
+
   useEffect(() => {
     setSelectedDensity((d) => clampDensityForType(selectedInsert, d));
   }, [selectedInsert]);
 
   useEffect(() => {
-    if (!eyedropperPending && !awaitingCopyDrag && !pasteArmed) return undefined;
+    if (!eyedropperPending && !awaitingCopyDrag && !pasteArmed && !mobileDrawerOpen) return undefined;
     const onKey = (e) => {
       if (e.key === "Escape") {
-        setEyedropperPending(false);
-        setAwaitingCopyDrag(false);
-        setPasteArmed(false);
+        dismissCanvasToolModes();
+        setMobileDrawerOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [eyedropperPending, awaitingCopyDrag, pasteArmed]);
+  }, [eyedropperPending, awaitingCopyDrag, pasteArmed, mobileDrawerOpen, dismissCanvasToolModes]);
+
+  useEffect(() => {
+    if (!awaitingCopyDrag) cutAfterRectRef.current = false;
+  }, [awaitingCopyDrag]);
+
+  useEffect(() => {
+    if (isXl) setMobileDrawerOpen(false);
+  }, [isXl]);
+
+  useEffect(() => {
+    if (isXl || !mobileDrawerOpen) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isXl, mobileDrawerOpen]);
 
   const handleEyedropperSample = useCallback(
     (cellId) => {
@@ -675,6 +1056,10 @@ export default function KumikoGridDesignerApp() {
   const paintCell = useCallback(
     (cellId, rotationCorner) => {
       if (selectedInsert === "empty") {
+        const hasP = cellId in placementsRef.current;
+        const hasB = cellId in cellBackgroundsRef.current;
+        if (!hasP && !hasB) return;
+        recordHistoryForLeftPaint();
         setPlacements((prev) => {
           if (!(cellId in prev)) return prev;
           const next = { ...prev };
@@ -690,18 +1075,49 @@ export default function KumikoGridDesignerApp() {
         return;
       }
       if (paintScope === "background") {
+        recordHistoryForLeftPaint();
         setCellBackgrounds((prevBg) => ({ ...prevBg, [cellId]: selectedColor }));
         return;
       }
+      const prevSnap = placementsRef.current;
+      const density = clampDensityForType(selectedInsert, selectedDensity);
+      const corner = Number.isInteger(rotationCorner) ? rotationCorner : 2;
+      if (paintScope === "color") {
+        const ex = prevSnap[cellId];
+        if (!ex?.type || ex.type === "empty") return;
+        if (ex.color === selectedColor) return;
+        recordHistoryForLeftPaint();
+      } else if (paintScope === "shapes") {
+        const ex = prevSnap[cellId];
+        const keepColor = ex?.color ?? selectedColor;
+        const same =
+          ex?.type === selectedInsert &&
+          (ex?.density ?? 1) === density &&
+          keepColor === (ex?.color ?? selectedColor) &&
+          (!selectedInsertRotationDependent ||
+            (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+        if (same) return;
+        recordHistoryForLeftPaint();
+      } else {
+        const ex = prevSnap[cellId];
+        const same =
+          ex?.type === selectedInsert &&
+          ex?.color === selectedColor &&
+          (ex?.density ?? 1) === density &&
+          (!selectedInsertRotationDependent ||
+            (Number.isInteger(ex?.rotationCorner) ? ex.rotationCorner : 2) === corner);
+        if (same) return;
+        recordHistoryForLeftPaint();
+      }
       setPlacements((prev) => {
-        const density = clampDensityForType(selectedInsert, selectedDensity);
-        const corner = Number.isInteger(rotationCorner) ? rotationCorner : 2;
+        const d = clampDensityForType(selectedInsert, selectedDensity);
+        const c = Number.isInteger(rotationCorner) ? rotationCorner : 2;
         if (paintScope === "color") {
-          const ex = prev[cellId];
-          if (!ex?.type || ex.type === "empty") return prev;
+          const ex2 = prev[cellId];
+          if (!ex2?.type || ex2.type === "empty") return prev;
           return {
             ...prev,
-            [cellId]: { ...ex, color: selectedColor },
+            [cellId]: { ...ex2, color: selectedColor },
           };
         }
         if (paintScope === "shapes") {
@@ -711,8 +1127,8 @@ export default function KumikoGridDesignerApp() {
             [cellId]: {
               type: selectedInsert,
               color: keepColor,
-              density,
-              ...(selectedInsertRotationDependent ? { rotationCorner: corner } : {}),
+              density: d,
+              ...(selectedInsertRotationDependent ? { rotationCorner: c } : {}),
             },
           };
         }
@@ -721,30 +1137,53 @@ export default function KumikoGridDesignerApp() {
           [cellId]: {
             type: selectedInsert,
             color: selectedColor,
-            density,
-            ...(selectedInsertRotationDependent ? { rotationCorner: corner } : {}),
+            density: d,
+            ...(selectedInsertRotationDependent ? { rotationCorner: c } : {}),
           },
         };
       });
     },
-    [selectedInsert, selectedColor, selectedDensity, paintScope, selectedInsertRotationDependent],
+    [
+      selectedInsert,
+      selectedColor,
+      selectedDensity,
+      paintScope,
+      selectedInsertRotationDependent,
+      recordHistoryForLeftPaint,
+    ],
   );
 
   const eraseCell = useCallback((cellId) => {
+    if (!(cellId in placementsRef.current)) return;
+    recordHistoryForRightErase();
     setPlacements((prev) => {
       if (!(cellId in prev)) return prev;
       const next = { ...prev };
       delete next[cellId];
       return next;
     });
-  }, []);
+  }, [recordHistoryForRightErase]);
 
   const handleCopyRect = useCallback(
     (bounds) => {
+      const doCut = cutAfterRectRef.current;
+      cutAfterRectRef.current = false;
       const entries = collectPlacementsInRect(placements, bounds);
       setClipboard({ entries });
+      if (doCut) {
+        recordHistory();
+        setPlacements((prev) => {
+          const next = { ...prev };
+          for (let r = bounds.rMin; r <= bounds.rMax; r += 1) {
+            for (let c = bounds.cMin; c <= bounds.cMax; c += 1) {
+              delete next[`${r}-${c}`];
+            }
+          }
+          return next;
+        });
+      }
     },
-    [placements],
+    [placements, recordHistory],
   );
 
   const handleCopyModeEnd = useCallback(() => {
@@ -762,6 +1201,7 @@ export default function KumikoGridDesignerApp() {
         setPasteArmed(false);
         return;
       }
+      recordHistory();
       setPlacements((prev) => {
         const next = { ...prev };
         for (const [relKey, p] of Object.entries(clipboard.entries)) {
@@ -783,7 +1223,7 @@ export default function KumikoGridDesignerApp() {
       });
       setPasteArmed(false);
     },
-    [clipboard, normalizedRows, normalizedCols],
+    [clipboard, normalizedRows, normalizedCols, recordHistory],
   );
 
   const floodFillFrom = useCallback(
@@ -791,6 +1231,22 @@ export default function KumikoGridDesignerApp() {
       const prevP = placementsRef.current;
       const prevBg = cellBackgroundsRef.current;
       const fillIds = collectFloodFillIds(startId, neighborMap, prevP, prevBg, paintScope);
+      if (
+        !floodFillWouldChange(
+          fillIds,
+          prevP,
+          prevBg,
+          paintScope,
+          selectedInsert,
+          selectedColor,
+          selectedDensity,
+          selectedInsertRotationDependent,
+          rotationCorner,
+        )
+      ) {
+        return;
+      }
+      recordHistory();
 
       if (paintScope === "background") {
         setCellBackgrounds((bg) => {
@@ -855,13 +1311,29 @@ export default function KumikoGridDesignerApp() {
         });
       }
     },
-    [neighborMap, selectedInsert, selectedColor, selectedDensity, paintScope, selectedInsertRotationDependent],
+    [
+      neighborMap,
+      selectedInsert,
+      selectedColor,
+      selectedDensity,
+      paintScope,
+      selectedInsertRotationDependent,
+      recordHistory,
+    ],
   );
 
-  function clearAll() {
+  const requestClearAll = useCallback(() => {
+    if (
+      !window.confirm(
+        "Clear every insert and all custom triangle backgrounds? You can undo with Ctrl+Z (Cmd+Z on Mac).",
+      )
+    ) {
+      return;
+    }
+    recordHistory();
     setPlacements({});
     setCellBackgrounds({});
-  }
+  }, [recordHistory]);
 
   const saveLayoutToFile = useCallback(() => {
     const json = stringifyLayoutDocument({
@@ -905,6 +1377,7 @@ export default function KumikoGridDesignerApp() {
         console.warn(result.error);
         return;
       }
+      recordHistory();
       setRows(String(result.rows));
       setCols(String(result.cols));
       setFrameRotation(result.frameRotation);
@@ -922,31 +1395,159 @@ export default function KumikoGridDesignerApp() {
       console.warn("Could not read layout file.");
     };
     reader.readAsText(file);
-  }, []);
+  }, [recordHistory]);
 
-  return (
-    <div className="min-h-screen bg-[#2b241b] text-[#f4ebd4]">
-      <div className="grid min-h-screen grid-cols-1 xl:h-screen xl:grid-cols-[340px_minmax(0,1fr)] xl:grid-rows-1 xl:items-stretch xl:overflow-hidden">
-        <aside className="flex h-full min-h-screen flex-col border-r border-white/10 bg-[#5e4c2b] p-4 md:p-5 xl:min-h-0 xl:overflow-y-auto">
-          <div className="flex min-h-0 w-full flex-1 flex-col gap-5">
+  function renderSidebarPanel() {
+    return (
+      <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-3">
             <div className="shrink-0">
-              <h1 className="text-2xl font-semibold tracking-tight">Kumiko Insert Designer</h1>
-              <p className="mt-2 text-sm leading-6 text-[#eadfbe]/80">
-                Build a mitsukude-style triangular grid, choose an insert and color. Left-click or drag to paint,
-                right-click or drag to clear the insert (triangle background stays). Middle-click to flood-fill matching
-                neighbors.
-              </p>
+              <div className="flex items-start gap-2">
+                <h1 className="min-w-0 flex-1 text-lg font-semibold leading-snug tracking-tight xl:text-base">
+                  Kumiko Insert Designer
+                </h1>
+                <button
+                  type="button"
+                  aria-expanded={introHelpOpen}
+                  aria-label="How to use"
+                  title="How to use"
+                  onClick={() => setIntroHelpOpen((v) => !v)}
+                  className={`shrink-0 rounded-lg border p-1.5 transition ${
+                    introHelpOpen
+                      ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]"
+                      : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"
+                  }`}
+                >
+                  <Info className="h-4 w-4" strokeWidth={2} aria-hidden />
+                </button>
+              </div>
+              {introHelpOpen ? (
+                <p className="mt-2 text-xs leading-relaxed text-[#eadfbe]/85">{INTRO_HELP}</p>
+              ) : null}
             </div>
 
-            <Card className="shrink-0 rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Grid3X3 className="h-4 w-4" /> Grid
+            <div className="flex shrink-0 flex-wrap items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] p-2">
+              <input
+                ref={layoutFileInputRef}
+                type="file"
+                accept=".json,application/json"
+                className="sr-only"
+                tabIndex={-1}
+                onChange={onLayoutFileSelected}
+              />
+              <button
+                type="button"
+                onClick={saveLayoutToFile}
+                title="Save layout"
+                aria-label="Save layout"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10"
+              >
+                <Save className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                onClick={() => layoutFileInputRef.current?.click()}
+                title="Load layout"
+                aria-label="Load layout"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10"
+              >
+                <FolderOpen className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setAwaitingCopyDrag((v) => {
+                    const next = !v;
+                    if (next) {
+                      setEyedropperPending(false);
+                      setPasteArmed(false);
+                    }
+                    return next;
+                  })
+                }
+                aria-pressed={awaitingCopyDrag}
+                title="Copy — drag on the grid to select a rectangle (Ctrl+C / Cmd+C)"
+                aria-label="Copy selection"
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
+                  awaitingCopyDrag
+                    ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]"
+                    : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
+                }`}
+              >
+                <Copy className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                disabled={!hasClipboard}
+                onClick={() => {
+                  if (!hasClipboard) return;
+                  setPasteArmed((v) => {
+                    const next = !v;
+                    if (next) {
+                      setEyedropperPending(false);
+                      setAwaitingCopyDrag(false);
+                    }
+                    return next;
+                  });
+                }}
+                aria-pressed={pasteArmed}
+                title={
+                  hasClipboard
+                    ? "Paste — click a cell to place the copy (Ctrl+V / Cmd+V)"
+                    : "Nothing copied yet"
+                }
+                aria-label="Paste"
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
+                  !hasClipboard
+                    ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35"
+                    : pasteArmed
+                      ? "border-sky-300/70 bg-sky-400/20 text-[#e8f4ff]"
+                      : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
+                }`}
+              >
+                <ClipboardPaste className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                disabled={!canUndo}
+                onClick={undo}
+                title="Undo (Ctrl+Z / Cmd+Z)"
+                aria-label="Undo"
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
+                  !canUndo
+                    ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35"
+                    : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
+                }`}
+              >
+                <Undo2 className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                disabled={!canRedo}
+                onClick={redo}
+                title="Redo (Ctrl+Y / Cmd+Shift+Z)"
+                aria-label="Redo"
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
+                  !canRedo
+                    ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35"
+                    : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
+                }`}
+              >
+                <Redo2 className="h-4 w-4" strokeWidth={2} />
+              </button>
+            </div>
+
+            <Card className="shrink-0 rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl">
+              <CardHeader className="shrink-0 space-y-0 p-3 pb-2">
+                <CardTitle
+                  className="flex items-center gap-2 text-sm font-semibold"
+                  title={GRID_HELP}
+                >
+                  <Grid3X3 className="h-3.5 w-3.5 shrink-0" /> Grid
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
+              <CardContent className="space-y-2 p-3 pt-0">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
                     <Label htmlFor="rows">Rows</Label>
                     <Input
                       id="rows"
@@ -955,10 +1556,10 @@ export default function KumikoGridDesignerApp() {
                       max={60}
                       value={rows}
                       onChange={(e) => setRows(e.target.value)}
-                      className="rounded-2xl border-white/15 bg-white/10 text-inherit"
+                      className="h-9 rounded-xl border-white/15 bg-white/10 text-inherit"
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <Label htmlFor="cols">Columns</Label>
                     <Input
                       id="cols"
@@ -967,16 +1568,13 @@ export default function KumikoGridDesignerApp() {
                       max={80}
                       value={cols}
                       onChange={(e) => setCols(e.target.value)}
-                      className="rounded-2xl border-white/15 bg-white/10 text-inherit"
+                      className="h-9 rounded-xl border-white/15 bg-white/10 text-inherit"
                     />
                   </div>
                 </div>
-                <p className="text-xs text-[#eadfbe]/70">
-                  Changing rows or columns regenerates the empty lattice. Existing placements stay as long as their cell IDs still exist.
-                </p>
-                <div className="space-y-2 pt-1">
+                <div className="space-y-1.5 pt-0.5">
                   <Label>Frame rotation</Label>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {FRAME_ROTATIONS.map((deg) => {
                       const on = frameRotation === deg;
                       return (
@@ -984,7 +1582,7 @@ export default function KumikoGridDesignerApp() {
                           key={deg}
                           type="button"
                           onClick={() => setFrameRotation(deg)}
-                          className={`rounded-xl border px-2.5 py-1.5 text-xs font-medium tabular-nums transition ${
+                          className={`rounded-lg border px-2 py-1 text-[11px] font-medium tabular-nums transition ${
                             on
                               ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]"
                               : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"
@@ -999,14 +1597,14 @@ export default function KumikoGridDesignerApp() {
               </CardContent>
             </Card>
 
-            <Card className="shrink-0 rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Paintbrush className="h-4 w-4" /> Paint
+            <Card className="shrink-0 rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl">
+              <CardHeader className="shrink-0 space-y-0 p-3 pb-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                  <Paintbrush className="h-3.5 w-3.5 shrink-0" /> Paint
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-1.5">
+              <CardContent className="p-3 pt-0">
+                <div className="flex flex-wrap gap-1">
                   {PAINT_SCOPES.map((s) => {
                     const on = paintScope === s.id;
                     const hint = PAINT_SCOPE_HINTS[s.id] ?? "";
@@ -1016,7 +1614,7 @@ export default function KumikoGridDesignerApp() {
                         type="button"
                         title={hint}
                         onClick={() => setPaintScope(s.id)}
-                        className={`rounded-xl border px-3 py-2 text-xs font-medium transition ${
+                        className={`rounded-lg border px-2 py-1.5 text-[11px] font-medium transition ${
                           on
                             ? "border-[#f2d08a] bg-[#f2d08a]/20 text-[#f4ebd4]"
                             : "border-white/10 bg-white/5 text-[#eadfbe] hover:bg-white/10"
@@ -1030,19 +1628,19 @@ export default function KumikoGridDesignerApp() {
               </CardContent>
             </Card>
 
-            <Card className="shrink-0 rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Palette className="h-4 w-4" /> Insert Color
+            <Card className="shrink-0 rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl">
+              <CardHeader className="shrink-0 space-y-0 p-3 pb-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                  <Palette className="h-3.5 w-3.5 shrink-0" /> Insert Color
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+              <CardContent className="p-3 pt-0">
+                <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-2">
                   <input
                     type="color"
                     value={selectedColor}
                     onChange={(e) => setSelectedColor(e.target.value)}
-                    className="h-12 w-16 cursor-pointer rounded border-0 bg-transparent"
+                    className="h-9 w-14 cursor-pointer rounded border-0 bg-transparent"
                   />
                   <button
                     type="button"
@@ -1059,31 +1657,31 @@ export default function KumikoGridDesignerApp() {
                     aria-pressed={eyedropperPending}
                     title="Pick color from a painted cell (one click). Click again or Esc to cancel."
                     aria-label="Eyedropper: pick color from grid"
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition ${
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
                       eyedropperPending
                         ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]"
                         : "border-white/10 bg-black/25 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
                     }`}
                   >
-                    <Pipette className="h-5 w-5" strokeWidth={2} />
+                    <Pipette className="h-4 w-4" strokeWidth={2} />
                   </button>
                   <div className="min-w-0">
-                    <div className="text-sm font-medium">Current color</div>
-                    <div className="text-sm text-[#eadfbe]/75">{selectedColor}</div>
+                    <div className="text-xs font-medium">Current color</div>
+                    <div className="truncate text-[11px] text-[#eadfbe]/75">{selectedColor}</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border-white/10 bg-black/15 text-inherit shadow-xl">
-              <CardHeader className="shrink-0 pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Shapes className="h-4 w-4" /> Insert Shapes
+            <Card className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border-white/10 bg-black/15 text-inherit shadow-xl">
+              <CardHeader className="shrink-0 space-y-0 p-3 pb-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                  <Shapes className="h-3.5 w-3.5 shrink-0" /> Insert Shapes
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex min-h-0 flex-1 flex-col px-6 pb-6 pt-0">
-                <ScrollArea className="min-h-0 flex-1 overflow-y-auto pr-2">
-                  <div className="grid gap-2.5">
+              <CardContent className="flex min-h-0 min-w-0 flex-1 flex-col p-3 pb-3 pt-0">
+                <ScrollArea className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden pr-1">
+                  <div className="grid gap-2">
                     {INSERT_LIST.map((insert) => {
                       const categoryActive = selectedInsert === insert.id;
                       const minD = insert.minDensity ?? 1;
@@ -1093,21 +1691,21 @@ export default function KumikoGridDesignerApp() {
                       return (
                         <div
                           key={insert.id}
-                          className={`rounded-2xl border px-3 py-3 transition ${
+                          className={`rounded-xl border px-2 py-2 transition ${
                             categoryActive
                               ? "border-[#f2d08a] bg-[#f2d08a]/12"
                               : "border-white/10 bg-white/5"
                           }`}
                         >
-                          <div className="flex flex-col items-start gap-2">
-                            <div className="font-medium">{insert.label}</div>
-                            <div className="flex flex-wrap gap-1.5">
+                          <div className="flex flex-col items-start gap-1.5">
+                            <div className="text-sm font-medium leading-none">{insert.label}</div>
+                            <div className="flex flex-wrap gap-1">
                               {insert.id === "empty" ? (
                                 <button
                                   type="button"
                                   onClick={() => setSelectedInsert("empty")}
                                   title="Empty — erase with paint tool"
-                                  className={`flex h-12 w-12 items-center justify-center rounded-xl border p-1 transition ${
+                                  className={`flex h-10 w-10 items-center justify-center rounded-lg border p-0.5 transition ${
                                     selectedInsert === "empty"
                                       ? "border-[#f2d08a] bg-[#f2d08a]/25"
                                       : "border-white/10 bg-black/25 hover:bg-white/10"
@@ -1128,7 +1726,7 @@ export default function KumikoGridDesignerApp() {
                                         setSelectedInsert(insert.id);
                                         setSelectedDensity(lvl);
                                       }}
-                                      className={`flex h-12 w-12 items-center justify-center rounded-xl border p-1 transition ${
+                                      className={`flex h-10 w-10 items-center justify-center rounded-lg border p-0.5 transition ${
                                         tileActive
                                           ? "border-[#f2d08a] bg-[#f2d08a]/25 shadow-[inset_0_0_0_1px_rgba(242,208,138,0.35)]"
                                           : "border-white/10 bg-black/25 hover:border-white/20 hover:bg-white/10"
@@ -1164,95 +1762,32 @@ export default function KumikoGridDesignerApp() {
 
             <Separator className="shrink-0 bg-white/10" />
 
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
-              <Button
-                onClick={clearAll}
-                variant="secondary"
-                className="min-w-0 flex-1 justify-start rounded-2xl bg-white/10 text-inherit hover:bg-white/15"
-              >
-                <Eraser className="mr-2 h-4 w-4 shrink-0" /> Clear all inserts
-              </Button>
-              <input
-                ref={layoutFileInputRef}
-                type="file"
-                accept=".json,application/json"
-                className="sr-only"
-                tabIndex={-1}
-                onChange={onLayoutFileSelected}
-              />
-              <button
-                type="button"
-                onClick={saveLayoutToFile}
-                title="Save layout"
-                aria-label="Save layout"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10"
-              >
-                <Save className="h-4 w-4" strokeWidth={2} />
-              </button>
-              <button
-                type="button"
-                onClick={() => layoutFileInputRef.current?.click()}
-                title="Load layout"
-                aria-label="Load layout"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10"
-              >
-                <FolderOpen className="h-4 w-4" strokeWidth={2} />
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  setAwaitingCopyDrag((v) => {
-                    const next = !v;
-                    if (next) {
-                      setEyedropperPending(false);
-                      setPasteArmed(false);
-                    }
-                    return next;
-                  })
-                }
-                aria-pressed={awaitingCopyDrag}
-                title="Copy — drag on the grid to select a rectangle of cells"
-                aria-label="Copy selection"
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border transition ${
-                  awaitingCopyDrag
-                    ? "border-[#f2d08a] bg-[#f2d08a]/25 text-[#f4ebd4]"
-                    : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
-                }`}
-              >
-                <Copy className="h-4 w-4" strokeWidth={2} />
-              </button>
-              <button
-                type="button"
-                disabled={!hasClipboard}
-                onClick={() => {
-                  if (!hasClipboard) return;
-                  setPasteArmed((v) => {
-                    const next = !v;
-                    if (next) {
-                      setEyedropperPending(false);
-                      setAwaitingCopyDrag(false);
-                    }
-                    return next;
-                  });
-                }}
-                aria-pressed={pasteArmed}
-                title={hasClipboard ? "Paste — click a cell to place the copy" : "Nothing copied yet"}
-                aria-label="Paste"
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border transition ${
-                  !hasClipboard
-                    ? "cursor-not-allowed border-white/5 bg-white/[0.03] text-[#eadfbe]/35"
-                    : pasteArmed
-                      ? "border-sky-300/70 bg-sky-400/20 text-[#e8f4ff]"
-                      : "border-white/10 bg-white/5 text-[#eadfbe] hover:border-white/20 hover:bg-white/10"
-                }`}
-              >
-                <ClipboardPaste className="h-4 w-4" strokeWidth={2} />
-              </button>
-            </div>
-          </div>
-        </aside>
+            <Button
+              type="button"
+              onClick={requestClearAll}
+              variant="secondary"
+              className="w-full shrink-0 justify-center rounded-xl bg-white/10 px-3 py-2.5 text-xs text-inherit hover:bg-white/15"
+            >
+              <Eraser className="mr-1.5 h-3.5 w-3.5 shrink-0" /> Clear all inserts & backgrounds
+            </Button>
+      </div>
+    );
+  }
 
-        <main className="min-h-0 overflow-auto p-3 md:p-4 xl:p-5">
+  return (
+    <div className="min-h-screen bg-[#2b241b] text-[#f4ebd4]">
+      <div
+        className={`grid min-h-screen xl:h-screen xl:grid-rows-1 xl:items-stretch xl:overflow-hidden ${
+          isXl ? "xl:grid-cols-[minmax(260px,300px)_minmax(0,1fr)]" : "grid-cols-1"
+        }`}
+      >
+        {isXl ? (
+          <aside className="flex h-full min-h-0 flex-col border-r border-white/10 bg-[#5e4c2b] p-3 overflow-y-auto overflow-x-hidden">
+            {renderSidebarPanel()}
+          </aside>
+        ) : null}
+
+        <main className="min-h-0 min-w-0 overflow-auto p-3 md:p-4 xl:p-5">
           <KumikoCanvas
             rows={normalizedRows}
             cols={normalizedCols}
@@ -1266,83 +1801,166 @@ export default function KumikoGridDesignerApp() {
             onCopyRect={handleCopyRect}
             onCopyModeEnd={handleCopyModeEnd}
             pasteArmed={pasteArmed}
+            pasteClipboardEntries={
+              pasteArmed && clipboard?.entries && Object.keys(clipboard.entries).length > 0
+                ? clipboard.entries
+                : null
+            }
             onPasteAt={handlePasteAt}
+            onDismissCanvasModes={dismissCanvasToolModes}
             onPaintCell={paintCell}
             onEraseCell={eraseCell}
             onFloodFill={floodFillFrom}
+            onLeftPaintStrokeStart={beginLeftPaintStroke}
+            onLeftPaintStrokeEnd={endLeftPaintStroke}
+            onRightEraseStrokeStart={beginRightEraseStroke}
+            onRightEraseStrokeEnd={endRightEraseStroke}
             showRotationCornerHint={selectedInsertRotationDependent && paintScope !== "background" && selectedInsert !== "empty"}
           />
         </main>
-        <aside
-          className="pointer-events-auto w-[360px] rounded-2xl border border-white/10 bg-black/45 p-3 shadow-2xl backdrop-blur-sm"
-          style={{
-            position: "fixed",
-            right: 16,
-            top: 16,
-            zIndex: 30,
-          }}
-        >
-          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#eadfbe]/85">
-            Piece Counts
-          </div>
-          <div className="max-h-[62vh] space-y-3 overflow-y-auto pr-1">
-            <div className="space-y-1">
-              <div className="text-[11px] uppercase tracking-wide text-[#eadfbe]/60">Inserts</div>
-              {pieceCounts.inserts.length === 0 ? (
-                <div className="text-xs text-[#eadfbe]/60">None placed</div>
-              ) : (
-                pieceCounts.inserts.map((item) => {
-                  const insertMeta = INSERT_REGISTRY.get(item.type);
-                  const previewPoints = insertMeta?.rotationDependent
-                    ? rotatePointsByCorner(insertPreview.points, item.rotationCorner)
-                    : insertPreview.points;
-                  return (
-                    <div
-                      key={`${item.type}-${item.color}-${item.density}`}
-                      className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5"
-                    >
-                      <svg
-                        viewBox={insertPreview.viewBox}
-                        preserveAspectRatio="xMidYMid meet"
-                        className="h-7 w-7 shrink-0 overflow-visible rounded-md bg-black/20"
-                        aria-hidden
-                      >
-                        <InsertArtwork
-                          type={item.type}
-                          points={previewPoints}
-                          color={item.color}
-                          density={item.density}
-                          preview
-                          showFrame={false}
-                        />
-                      </svg>
-                      <div className="min-w-0 flex-1 text-xs">
-                        <div className="text-[#f4ebd4]">{insertMeta?.label ?? item.type}</div>
-                        <div className="break-all text-[#eadfbe]/65">{item.color}</div>
-                      </div>
-                      <div className="shrink-0 text-sm font-semibold text-[#f4ebd4]">x {item.count}</div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <div className="text-[11px] uppercase tracking-wide text-[#eadfbe]/60">Backgrounds</div>
-              {pieceCounts.backgrounds.map((bg) => (
-                <div
-                  key={`bg-${bg.color}`}
-                  className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5"
-                >
-                  <div className="h-6 w-6 shrink-0 rounded-md border border-white/15" style={{ backgroundColor: bg.color }} />
-                  <div className="min-w-0 flex-1 break-all text-xs text-[#eadfbe]/75">{bg.color}</div>
-                  <div className="shrink-0 text-sm font-semibold text-[#f4ebd4]">x {bg.count}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </aside>
       </div>
+
+      {!isXl ? (
+        <>
+          <button
+            type="button"
+            onClick={() => setMobileDrawerOpen(true)}
+            className="fixed bottom-4 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-[#5e4c2b] text-[#f4ebd4] shadow-lg"
+            aria-label="Open design controls"
+          >
+            <PanelLeft className="h-5 w-5" strokeWidth={2} aria-hidden />
+          </button>
+          {mobileDrawerOpen ? (
+            <>
+              <div
+                className="fixed inset-0 z-40 bg-black/55"
+                aria-hidden
+                onClick={() => setMobileDrawerOpen(false)}
+              />
+              <div
+                className="fixed inset-y-0 left-0 z-50 flex max-w-[min(22rem,calc(100vw-1.5rem))] flex-col border-r border-white/10 bg-[#5e4c2b] shadow-2xl"
+                style={{ width: "min(22rem, calc(100vw - 1.5rem))" }}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Design controls"
+              >
+                <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-3 py-2.5">
+                  <span className="text-sm font-semibold tracking-tight">Controls</span>
+                  <button
+                    type="button"
+                    onClick={() => setMobileDrawerOpen(false)}
+                    aria-label="Close panel"
+                    className="rounded-lg border border-white/10 bg-white/5 p-2 text-[#eadfbe] hover:bg-white/10"
+                  >
+                    <X className="h-4 w-4" strokeWidth={2} aria-hidden />
+                  </button>
+                </div>
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3">
+                  {renderSidebarPanel()}
+                </div>
+              </div>
+            </>
+          ) : null}
+        </>
+      ) : null}
+
+      {/* Outside the 2-col grid: a third child was stealing row 2 and collapsing the sidebar height */}
+      <aside
+        className={`pointer-events-auto max-w-[calc(100vw-2rem)] rounded-2xl border border-white/10 bg-black/45 p-3 shadow-2xl backdrop-blur-sm ${
+          pieceCountsOpen ? "w-[min(360px,calc(100vw-2rem))]" : "w-max"
+        }`}
+        style={{
+          position: "fixed",
+          right: 16,
+          top: 16,
+          zIndex: 30,
+        }}
+      >
+        <button
+          type="button"
+          className={`flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1 text-left transition hover:bg-white/5 ${
+            pieceCountsOpen ? "mb-2" : "mb-0"
+          }`}
+          onClick={() => setPieceCountsOpen((o) => !o)}
+          aria-expanded={pieceCountsOpen}
+          aria-controls={pieceCountsOpen ? "piece-counts-body" : undefined}
+          id="piece-counts-heading"
+        >
+          <span className="text-xs font-semibold uppercase tracking-wide text-[#eadfbe]/85">
+            Piece Counts
+          </span>
+          <ChevronDown
+            className={`h-4 w-4 shrink-0 text-[#eadfbe]/80 transition-transform duration-200 ${
+              pieceCountsOpen ? "rotate-180" : ""
+            }`}
+            strokeWidth={2}
+            aria-hidden
+          />
+        </button>
+        {pieceCountsOpen ? (
+        <div
+          id="piece-counts-body"
+          role="region"
+          aria-labelledby="piece-counts-heading"
+          className="max-h-[62vh] space-y-3 overflow-y-auto pr-1"
+        >
+          <div className="space-y-1">
+            <div className="text-[11px] uppercase tracking-wide text-[#eadfbe]/60">Inserts</div>
+            {pieceCounts.inserts.length === 0 ? (
+              <div className="text-xs text-[#eadfbe]/60">None placed</div>
+            ) : (
+              pieceCounts.inserts.map((item) => {
+                const insertMeta = INSERT_REGISTRY.get(item.type);
+                const previewPoints = insertMeta?.rotationDependent
+                  ? rotatePointsByCorner(insertPreview.points, item.rotationCorner)
+                  : insertPreview.points;
+                return (
+                  <div
+                    key={`${item.type}-${item.color}-${item.density}`}
+                    className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5"
+                  >
+                    <svg
+                      viewBox={insertPreview.viewBox}
+                      preserveAspectRatio="xMidYMid meet"
+                      className="h-7 w-7 shrink-0 overflow-visible rounded-md bg-black/20"
+                      aria-hidden
+                    >
+                      <InsertArtwork
+                        type={item.type}
+                        points={previewPoints}
+                        color={item.color}
+                        density={item.density}
+                        preview
+                        showFrame={false}
+                      />
+                    </svg>
+                    <div className="min-w-0 flex-1 text-xs">
+                      <div className="text-[#f4ebd4]">{insertMeta?.label ?? item.type}</div>
+                      <div className="break-all text-[#eadfbe]/65">{item.color}</div>
+                    </div>
+                    <div className="shrink-0 text-sm font-semibold text-[#f4ebd4]">x {item.count}</div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-[11px] uppercase tracking-wide text-[#eadfbe]/60">Backgrounds</div>
+            {pieceCounts.backgrounds.map((bg) => (
+              <div
+                key={`bg-${bg.color}`}
+                className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5"
+              >
+                <div className="h-6 w-6 shrink-0 rounded-md border border-white/15" style={{ backgroundColor: bg.color }} />
+                <div className="min-w-0 flex-1 break-all text-xs text-[#eadfbe]/75">{bg.color}</div>
+                <div className="shrink-0 text-sm font-semibold text-[#f4ebd4]">x {bg.count}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        ) : null}
+      </aside>
     </div>
   );
 }
