@@ -2433,7 +2433,7 @@ var require_react_dom_development = __commonJS({
         var HostPortal = 4;
         var HostComponent = 5;
         var HostText = 6;
-        var Fragment3 = 7;
+        var Fragment4 = 7;
         var Mode = 8;
         var ContextConsumer = 9;
         var ContextProvider = 10;
@@ -3590,7 +3590,7 @@ var require_react_dom_development = __commonJS({
               return "DehydratedFragment";
             case ForwardRef:
               return getWrappedName$1(type, type.render, "ForwardRef");
-            case Fragment3:
+            case Fragment4:
               return "Fragment";
             case HostComponent:
               return type;
@@ -12019,7 +12019,7 @@ var require_react_dom_development = __commonJS({
             }
           }
           function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-            if (current2 === null || current2.tag !== Fragment3) {
+            if (current2 === null || current2.tag !== Fragment4) {
               var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
               created.return = returnFiber;
               return created;
@@ -12422,7 +12422,7 @@ var require_react_dom_development = __commonJS({
               if (child.key === key) {
                 var elementType = element.type;
                 if (elementType === REACT_FRAGMENT_TYPE) {
-                  if (child.tag === Fragment3) {
+                  if (child.tag === Fragment4) {
                     deleteRemainingChildren(returnFiber, child.sibling);
                     var existing = useFiber(child, element.props.children);
                     existing.return = returnFiber;
@@ -17898,7 +17898,7 @@ var require_react_dom_development = __commonJS({
               var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
               return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
             }
-            case Fragment3:
+            case Fragment4:
               return updateFragment(current2, workInProgress2, renderLanes2);
             case Mode:
               return updateMode(current2, workInProgress2, renderLanes2);
@@ -18170,7 +18170,7 @@ var require_react_dom_development = __commonJS({
             case SimpleMemoComponent:
             case FunctionComponent:
             case ForwardRef:
-            case Fragment3:
+            case Fragment4:
             case Mode:
             case Profiler:
             case ContextConsumer:
@@ -22431,7 +22431,7 @@ var require_react_dom_development = __commonJS({
           return fiber;
         }
         function createFiberFromFragment(elements, mode, lanes, key) {
-          var fiber = createFiber(Fragment3, elements, key, mode);
+          var fiber = createFiber(Fragment4, elements, key, mode);
           fiber.lanes = lanes;
           return fiber;
         }
@@ -24669,6 +24669,18 @@ var FolderOpen = createLucideIcon("FolderOpen", [
   ]
 ]);
 
+// node_modules/lucide-react/dist/esm/icons/github.js
+var Github = createLucideIcon("Github", [
+  [
+    "path",
+    {
+      d: "M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4",
+      key: "tonef"
+    }
+  ],
+  ["path", { d: "M9 18c-4.51 2-5-2-7-2", key: "9comsn" }]
+]);
+
 // node_modules/lucide-react/dist/esm/icons/grid-3x3.js
 var Grid3x3 = createLucideIcon("Grid3x3", [
   ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
@@ -25626,7 +25638,58 @@ var PAINT_SCOPE_HINTS = {
   color: "Change color only on painted cells",
   background: "Triangle fill only (under the pattern); uses current swatch"
 };
-var INTRO_HELP = "Build a mitsukude-style triangular grid, choose an insert and color. Left-click or drag to paint; right-click or drag to clear the insert (triangle background stays). Middle-click to flood-fill matching neighbors. Ctrl+C / Ctrl+V toggle copy and paste (Cmd on Mac); Ctrl+X then drag a rectangle to cut inserts from that area.";
+var REPO_URL = "https://github.com/Nicole-W/kumiko-designer";
+var INTRO_SECTIONS = [
+  {
+    title: "Getting started",
+    paragraphs: [
+      "Choose an insert pattern and color, then paint on the mitsukude-style triangular grid.",
+      "Use the Grid card to change rows, columns, and frame rotation."
+    ]
+  },
+  {
+    title: "Painting",
+    rows: [
+      { key: "Left-click or drag", detail: "Paint cells." },
+      {
+        key: "Right-click or drag",
+        detail: "Remove the insert only (custom triangle background stays)."
+      },
+      {
+        key: "Middle-click",
+        detail: "Flood-fill connected cells that match the current paint scope."
+      }
+    ]
+  },
+  {
+    title: "Copy & paste",
+    rows: [
+      {
+        key: "Ctrl+C / Cmd+C",
+        detail: "Enter copy mode, then drag a rectangle on the grid."
+      },
+      {
+        key: "Ctrl+V / Cmd+V",
+        detail: "Enter paste mode, then click where the copy should anchor."
+      },
+      {
+        key: "Ctrl+X",
+        detail: "Cut: drag a rectangle to copy those inserts and clear them from the grid."
+      },
+      {
+        key: "Esc \xB7 right-click",
+        detail: "Cancel eyedropper, copy, or paste (right-click on the grid)."
+      }
+    ]
+  },
+  {
+    title: "History",
+    rows: [
+      { key: "Ctrl+Z / Cmd+Z", detail: "Undo." },
+      { key: "Ctrl+Y \xB7 Shift+Cmd+Z", detail: "Redo." }
+    ]
+  }
+];
 var GRID_HELP = "Changing rows or columns regenerates the empty lattice. Existing placements stay as long as their cell IDs still exist.";
 var MAX_HISTORY = 80;
 function clonePlacements(p) {
@@ -26790,6 +26853,18 @@ function KumikoGridDesignerApp() {
         /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex items-start gap-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("h1", { className: "min-w-0 flex-1 text-lg font-semibold leading-snug tracking-tight xl:text-base", children: "Kumiko Insert Designer" }),
           /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+            "a",
+            {
+              href: REPO_URL,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "shrink-0 rounded-lg border border-white/10 bg-white/5 p-1.5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10",
+              "aria-label": "Source on GitHub",
+              title: "Source on GitHub",
+              children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Github, { className: "h-4 w-4", strokeWidth: 2, "aria-hidden": true })
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
             "button",
             {
               type: "button",
@@ -26802,7 +26877,30 @@ function KumikoGridDesignerApp() {
             }
           )
         ] }),
-        introHelpOpen ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("p", { className: "mt-2 text-xs leading-relaxed text-[#eadfbe]/85", children: INTRO_HELP }) : null
+        introHelpOpen ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+          "div",
+          {
+            className: "mt-3 space-y-3 rounded-xl border border-white/10 bg-black/25 p-3 shadow-inner",
+            role: "region",
+            "aria-label": "How to use",
+            children: INTRO_SECTIONS.map((sec) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("h2", { className: "text-[11px] font-semibold uppercase tracking-wide text-[#f2d08a]/90", children: sec.title }),
+              sec.paragraphs ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("ul", { className: "mt-2 space-y-2 text-xs leading-snug text-[#eadfbe]/88", children: sec.paragraphs.map((line, i) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("li", { className: "flex gap-2.5 pl-0.5", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+                  "span",
+                  {
+                    className: "mt-2 h-1 w-1 shrink-0 rounded-full bg-[#d8b56a]/80",
+                    "aria-hidden": true
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { children: line })
+              ] }, i)) }) : /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mt-2 grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2.5 text-xs leading-snug", children: sec.rows.map((row, i) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_react4.Fragment, { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("strong", { className: "block border-r border-white/[0.1] pr-3 text-right font-semibold text-[#f4ebd4]", children: row.key }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "min-w-0 text-[#eadfbe]/88", children: row.detail })
+              ] }, i)) })
+            ] }, sec.title))
+          }
+        ) : null
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "flex shrink-0 flex-wrap items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] p-2", children: [
         /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
@@ -27445,6 +27543,14 @@ lucide-react/dist/esm/icons/eraser.js:
    *)
 
 lucide-react/dist/esm/icons/folder-open.js:
+  (**
+   * @license lucide-react v0.468.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/github.js:
   (**
    * @license lucide-react v0.468.0 - ISC
    *

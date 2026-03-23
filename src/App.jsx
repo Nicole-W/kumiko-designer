@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -27,6 +27,7 @@ import {
   Undo2,
   Redo2,
   ChevronDown,
+  Github,
 } from "lucide-react";
 import { triPointString } from "./inserts/geometry.js";
 import { InsertArtwork, INSERT_LIST, INSERT_REGISTRY, clampDensityForType } from "./inserts/registry.js";
@@ -89,8 +90,59 @@ const PAINT_SCOPE_HINTS = {
   background: "Triangle fill only (under the pattern); uses current swatch",
 };
 
-const INTRO_HELP =
-  "Build a mitsukude-style triangular grid, choose an insert and color. Left-click or drag to paint; right-click or drag to clear the insert (triangle background stays). Middle-click to flood-fill matching neighbors. Ctrl+C / Ctrl+V toggle copy and paste (Cmd on Mac); Ctrl+X then drag a rectangle to cut inserts from that area.";
+const REPO_URL = "https://github.com/Nicole-W/kumiko-designer";
+
+const INTRO_SECTIONS = [
+  {
+    title: "Getting started",
+    paragraphs: [
+      "Choose an insert pattern and color, then paint on the mitsukude-style triangular grid.",
+      "Use the Grid card to change rows, columns, and frame rotation.",
+    ],
+  },
+  {
+    title: "Painting",
+    rows: [
+      { key: "Left-click or drag", detail: "Paint cells." },
+      {
+        key: "Right-click or drag",
+        detail: "Remove the insert only (custom triangle background stays).",
+      },
+      {
+        key: "Middle-click",
+        detail: "Flood-fill connected cells that match the current paint scope.",
+      },
+    ],
+  },
+  {
+    title: "Copy & paste",
+    rows: [
+      {
+        key: "Ctrl+C / Cmd+C",
+        detail: "Enter copy mode, then drag a rectangle on the grid.",
+      },
+      {
+        key: "Ctrl+V / Cmd+V",
+        detail: "Enter paste mode, then click where the copy should anchor.",
+      },
+      {
+        key: "Ctrl+X",
+        detail: "Cut: drag a rectangle to copy those inserts and clear them from the grid.",
+      },
+      {
+        key: "Esc · right-click",
+        detail: "Cancel eyedropper, copy, or paste (right-click on the grid).",
+      },
+    ],
+  },
+  {
+    title: "History",
+    rows: [
+      { key: "Ctrl+Z / Cmd+Z", detail: "Undo." },
+      { key: "Ctrl+Y · Shift+Cmd+Z", detail: "Redo." },
+    ],
+  },
+];
 
 const GRID_HELP =
   "Changing rows or columns regenerates the empty lattice. Existing placements stay as long as their cell IDs still exist.";
@@ -1405,6 +1457,16 @@ export default function KumikoGridDesignerApp() {
                 <h1 className="min-w-0 flex-1 text-lg font-semibold leading-snug tracking-tight xl:text-base">
                   Kumiko Insert Designer
                 </h1>
+                <a
+                  href={REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 rounded-lg border border-white/10 bg-white/5 p-1.5 text-[#eadfbe] transition hover:border-white/20 hover:bg-white/10"
+                  aria-label="Source on GitHub"
+                  title="Source on GitHub"
+                >
+                  <Github className="h-4 w-4" strokeWidth={2} aria-hidden />
+                </a>
                 <button
                   type="button"
                   aria-expanded={introHelpOpen}
@@ -1421,7 +1483,43 @@ export default function KumikoGridDesignerApp() {
                 </button>
               </div>
               {introHelpOpen ? (
-                <p className="mt-2 text-xs leading-relaxed text-[#eadfbe]/85">{INTRO_HELP}</p>
+                <div
+                  className="mt-3 space-y-3 rounded-xl border border-white/10 bg-black/25 p-3 shadow-inner"
+                  role="region"
+                  aria-label="How to use"
+                >
+                  {INTRO_SECTIONS.map((sec) => (
+                    <div key={sec.title}>
+                      <h2 className="text-[11px] font-semibold uppercase tracking-wide text-[#f2d08a]/90">
+                        {sec.title}
+                      </h2>
+                      {sec.paragraphs ? (
+                        <ul className="mt-2 space-y-2 text-xs leading-snug text-[#eadfbe]/88">
+                          {sec.paragraphs.map((line, i) => (
+                            <li key={i} className="flex gap-2.5 pl-0.5">
+                              <span
+                                className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#d8b56a]/80"
+                                aria-hidden
+                              />
+                              <span>{line}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="mt-2 grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2.5 text-xs leading-snug">
+                          {sec.rows.map((row, i) => (
+                            <Fragment key={i}>
+                              <strong className="block border-r border-white/[0.1] pr-3 text-right font-semibold text-[#f4ebd4]">
+                                {row.key}
+                              </strong>
+                              <div className="min-w-0 text-[#eadfbe]/88">{row.detail}</div>
+                            </Fragment>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               ) : null}
             </div>
 
