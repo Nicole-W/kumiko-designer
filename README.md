@@ -61,4 +61,4 @@ Saved files are JSON with `format: "kumiko-layout"`, grid settings, `placements`
 
 ## License
 
-Add your preferred license here.
+[MIT](LICENSE) — see `LICENSE` in the repository root.
