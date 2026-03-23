@@ -36,6 +36,9 @@ npm start
 | `npm run build:css` | CSS only                                       |
 | `npm run build:js`  | JS bundle only                                 |
 
+### GitHub Pages
+
+**Settings → Pages → Source: GitHub Actions.** On push to `main` or `master`, `.github/workflows/static.yml` runs `npm ci`, **`npm run build`** (writes `public/app.js` and `public/styles.css`), then deploys **`public/`**.
 
 ### Port
 
