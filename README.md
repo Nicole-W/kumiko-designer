@@ -26,15 +26,16 @@ npm install
 npm start
 ```
 
-`npm start` runs `prestart`, which builds CSS/JS, then starts a static file server. Open **http://localhost:3000** (or the port shown in the terminal).
+`npm start` builds first (`prestart`), then serves **`public/`** at **http://localhost:3000** (or the port shown).
 
 ### Other scripts
 
 | Command        | Description                                      |
 | -------------- | ------------------------------------------------ |
-| `npm run build` | Build Tailwind → `public/styles.css` and bundle → `public/app.js` |
+| `npm run build` | Build `styles.css` and `app.js` into **`public/`** |
 | `npm run build:css` | CSS only                                       |
 | `npm run build:js`  | JS bundle only                                 |
+
 
 ### Port
 
@@ -52,7 +53,8 @@ PORT=8080 npm start
 | `src/main.jsx` | App entry (mounts into `#root`) |
 | `src/inserts/` | Insert implementations and `registry.js` |
 | `src/layoutPersistence.js` | Save/load JSON format |
-| `public/` | Static assets served by `server.js` (`index.html`, built `app.js`, `styles.css`) |
+| `public/` | Static site (`index.html`, built `app.js` / `styles.css`) — served locally and deployed to Pages |
+| `docs/` | README assets (e.g. `screenshots/`) |
 | `server.js` | Minimal static HTTP server |
 
 ## Layout file format
