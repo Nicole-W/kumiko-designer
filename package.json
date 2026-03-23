@@ -1,0 +1,25 @@
+{
+  "name": "kumiko",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "build:js": "esbuild src/main.jsx --bundle --outfile=public/app.js --format=esm --jsx=automatic --jsx-import-source=react --loader:.js=jsx",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/styles.css --minify",
+    "build": "npm run build:css && npm run build:js",
+    "start": "node server.js",
+    "prestart": "npm run build"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "esbuild": "^0.24.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15"
+  }
+}
