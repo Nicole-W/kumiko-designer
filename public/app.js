@@ -25287,7 +25287,7 @@ var KakuseigaihaInsert = class extends BaseInsert {
     const pivot = points[2];
     const left = points[0];
     const right = points[1];
-    const bands = [0.25, 0.45, 0.67, 0.85];
+    const bands = [0.2, 0.4, 0.6, 0.8];
     return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("g", { children: [
       /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("polygon", { points: triPointString(points), fill: "none", stroke: frameColor, strokeWidth: outerStroke, strokeLinejoin: "round" }),
       bands.map((t, i) => {

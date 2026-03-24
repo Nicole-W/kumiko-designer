@@ -8,7 +8,7 @@ function polarArcPath(center, start, end) {
 }
 
 /**
- * Sensu (folding fan): concentric arcs centered on one corner.
+ * Kakuseigaiha: concentric arcs centered on one corner.
  * `rotationDependent` uses `points[2]` as the active fan pivot.
  */
 export class KakuseigaihaInsert extends BaseInsert {
@@ -27,7 +27,7 @@ export class KakuseigaihaInsert extends BaseInsert {
     const pivot = points[2];
     const left = points[0];
     const right = points[1];
-    const bands = [0.25, 0.45, 0.67, 0.85];
+    const bands = [0.20, 0.40, 0.60, 0.80];
 
     return (
       <g>
