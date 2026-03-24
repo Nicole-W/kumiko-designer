@@ -7,6 +7,7 @@
     "type": "git",
     "url": "https://github.com/Nicole-W/kumiko-designer.git"
   },
+  "homepage": "https://nicole-w.github.io/kumiko-designer/",
   "type": "module",
   "main": "server.js",
   "scripts": {

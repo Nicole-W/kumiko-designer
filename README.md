@@ -1,5 +1,7 @@
 # Kumiko Insert Designer
 
+**[Open the app (GitHub Pages)](https://nicole-w.github.io/kumiko-designer/)** — runs in the browser, no install.
+
 A small web app for laying out **mitsukude-style triangular grids** with decorative **kumiko inserts**, colors, and per-triangle backgrounds. Built as a helper for planning real panels (for example, parts you will 3D print in specific filament colors).
 
 ## Features
